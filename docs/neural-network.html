@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Neural Network | Applied Machine Learning</title>
+  <meta name="description" content="Chapter 7 Neural Network | Applied Machine Learning" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Neural Network | Applied Machine Learning" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Neural Network | Applied Machine Learning" />
+  
+  
+  
+
+<meta name="author" content="Sheptim Veseli &amp; Eliana Perea Barreto" />
+
+
+<meta name="date" content="2024-06-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="generalized-additive-model.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Applied ML</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#dataset"><i class="fa fa-check"></i><b>1.1</b> Dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#the-models"><i class="fa fa-check"></i><b>1.2</b> The models</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#use-of-generative-ai"><i class="fa fa-check"></i><b>1.3</b> Use of Generative AI</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="simple-linear-model.html"><a href="simple-linear-model.html"><i class="fa fa-check"></i><b>2</b> Simple Linear Model</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#data-preparation"><i class="fa fa-check"></i><b>2.2</b> Data Preparation</a></li>
+<li class="chapter" data-level="2.3" data-path="simple-linear-model.html"><a href="simple-linear-model.html#descriptive-statistics"><i class="fa fa-check"></i><b>2.3</b> Descriptive Statistics</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#arrival-delay-statistics"><i class="fa fa-check"></i><b>2.3.1</b> Arrival Delay Statistics</a></li>
+<li class="chapter" data-level="2.3.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#carrier-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Carrier Statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="simple-linear-model.html"><a href="simple-linear-model.html#linear-regression-analysis"><i class="fa fa-check"></i><b>2.4</b> Linear Regression Analysis</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#model-summary"><i class="fa fa-check"></i><b>2.4.1</b> Model Summary</a></li>
+<li class="chapter" data-level="2.4.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#significant-carriers"><i class="fa fa-check"></i><b>2.4.2</b> Significant Carriers</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="simple-linear-model.html"><a href="simple-linear-model.html#diagnostic-plots"><i class="fa fa-check"></i><b>2.5</b> Diagnostic Plots</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#interpretation-and-conclusion"><i class="fa fa-check"></i><b>2.5.1</b> Interpretation and Conclusion</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html"><i class="fa fa-check"></i><b>3</b> Poisson Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#overview"><i class="fa fa-check"></i><b>3.1</b> Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#algorithmic-framework"><i class="fa fa-check"></i><b>3.2</b> Algorithmic Framework</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#data-nature"><i class="fa fa-check"></i><b>3.2.1</b> Data Nature</a></li>
+<li class="chapter" data-level="3.2.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#regression-equation"><i class="fa fa-check"></i><b>3.2.2</b> Regression equation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#training-predicting-process"><i class="fa fa-check"></i><b>3.3</b> Training &amp; Predicting Process</a></li>
+<li class="chapter" data-level="3.4" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#strengths-limitations"><i class="fa fa-check"></i><b>3.4</b> Strengths &amp; Limitations</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#strengths"><i class="fa fa-check"></i><b>3.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="3.4.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#limitations"><i class="fa fa-check"></i><b>3.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html"><i class="fa fa-check"></i><b>4</b> Binomial Linear Regression</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#overview-1"><i class="fa fa-check"></i><b>4.1</b> Overview</a></li>
+<li class="chapter" data-level="4.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#algorithmic-framework-1"><i class="fa fa-check"></i><b>4.2</b> Algorithmic Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#data-nature-1"><i class="fa fa-check"></i><b>4.2.1</b> Data Nature</a></li>
+<li class="chapter" data-level="4.2.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#regression-equation-1"><i class="fa fa-check"></i><b>4.2.2</b> Regression Equation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#training-predicting-process-1"><i class="fa fa-check"></i><b>4.3</b> Training &amp; Predicting Process</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#model-evaluation"><i class="fa fa-check"></i><b>4.3.1</b> Model Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#strengths-and-limitations"><i class="fa fa-check"></i><b>4.4</b> Strengths and Limitations</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#strengths-1"><i class="fa fa-check"></i><b>4.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="4.4.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#limitations-1"><i class="fa fa-check"></i><b>4.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="support-vector-machine.html"><a href="support-vector-machine.html"><i class="fa fa-check"></i><b>5</b> Support Vector Machine</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#introduction-2"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="support-vector-machine.html"><a href="support-vector-machine.html#data-preparation-1"><i class="fa fa-check"></i><b>5.2</b> Data Preparation</a></li>
+<li class="chapter" data-level="5.3" data-path="support-vector-machine.html"><a href="support-vector-machine.html#training-and-test-split"><i class="fa fa-check"></i><b>5.3</b> Training and Test Split</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#svm-model-training"><i class="fa fa-check"></i><b>5.3.1</b> SVM Model Training</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="support-vector-machine.html"><a href="support-vector-machine.html#model-evaluation-1"><i class="fa fa-check"></i><b>5.4</b> Model Evaluation</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#result-interpretation"><i class="fa fa-check"></i><b>5.4.1</b> Result Interpretation</a></li>
+<li class="chapter" data-level="5.4.2" data-path="support-vector-machine.html"><a href="support-vector-machine.html#discussion"><i class="fa fa-check"></i><b>5.4.2</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="support-vector-machine.html"><a href="support-vector-machine.html#conclusion"><i class="fa fa-check"></i><b>5.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html"><i class="fa fa-check"></i><b>6</b> Generalized Additive Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#introduction-3"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#data-preparation-2"><i class="fa fa-check"></i><b>6.2</b> Data Preparation</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#log-transformation"><i class="fa fa-check"></i><b>6.2.1</b> Log Transformation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#data-splitting-model-fitting"><i class="fa fa-check"></i><b>6.3</b> Data Splitting &amp; Model Fitting</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#model-summary-1"><i class="fa fa-check"></i><b>6.3.1</b> Model Summary</a></li>
+<li class="chapter" data-level="6.3.2" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#model-evaluation-2"><i class="fa fa-check"></i><b>6.3.2</b> Model Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#conclusion-1"><i class="fa fa-check"></i><b>6.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i><b>7</b> Neural Network</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="neural-network.html"><a href="neural-network.html#overview-2"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="neural-network.html"><a href="neural-network.html#algorithmic-framework-2"><i class="fa fa-check"></i><b>7.2</b> Algorithmic Framework</a></li>
+<li class="chapter" data-level="7.3" data-path="neural-network.html"><a href="neural-network.html#training-predicting-process-2"><i class="fa fa-check"></i><b>7.3</b> Training &amp; Predicting Process</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="neural-network.html"><a href="neural-network.html#feed-forward-algorithm"><i class="fa fa-check"></i><b>7.3.1</b> Feed-forward Algorithm</a></li>
+<li class="chapter" data-level="7.3.2" data-path="neural-network.html"><a href="neural-network.html#backpropagation"><i class="fa fa-check"></i><b>7.3.2</b> Backpropagation</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="neural-network.html"><a href="neural-network.html#strengths-limitations-1"><i class="fa fa-check"></i><b>7.4</b> Strengths &amp; Limitations</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="neural-network.html"><a href="neural-network.html#strengths-2"><i class="fa fa-check"></i><b>7.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="7.4.2" data-path="neural-network.html"><a href="neural-network.html#limitations-2"><i class="fa fa-check"></i><b>7.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/EliB29/AML" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Applied Machine Learning</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="neural-network" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Neural Network<a href="neural-network.html#neural-network" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>By Eliana Perea Barreto</p>
+<div id="overview-2" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Overview<a href="neural-network.html#overview-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Neural networks are computational models inspired by the workings of the human brain. The base-units of these networks are neurons, which are essentially units of value that exist within a system of layers. In each layer, the neurons are properly activated and managed to determine the strength and direction of the signals transmitted between them. The process of activating neurons to achieve coherent outputs is governed by weights and biases, which control the flow and transformation of input data through the network.</p>
+</div>
+<div id="algorithmic-framework-2" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Algorithmic Framework<a href="neural-network.html#algorithmic-framework-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The neural network consists of neurons, weights, biases, and layers. These elements collectively form its architecture. The quantity of these components depend on the model’s complexity and desired precision, ranging from simple (a few layers and neurons) to highly intricate structures (thousands of neurons and numerous layers). In this specific case, a simple neural network is employed to predict flights arrival delay (arr_delay) based on carrier names (carrier). At the core of the model, there are 4 layers: the input layer (x) with 16 neurons (one for each carrier), 2 hidden layers (z_1, z_2) with 3 and 2 neurons respectively, and the output layer (y) with one neuron.</p>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Layers </b></p>
+</summary>
+<pre><code># Initialize layers
+input_size &lt;- 16
+hidden_size1 &lt;- 3
+hidden_size2 &lt;- 2
+output_size &lt;- 1</code></pre>
+</details>
+<p>As carrier names are categorical variables, they must be encoded into numeric format. For that, one-hot encoding is implemented to convert the categorical carrier feature into multiple binary features. The goal is to prevent the model from assuming any ordinal relationship between the categories. Each row will have a 1 in the column corresponding to its carrier and 0 in the others.</p>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">One-Hot Encode </b></p>
+</summary>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="neural-network.html#cb58-1" tabindex="-1"></a><span class="co"># One-Hot Encode the &#39;carrier&#39; variable</span></span>
+<span id="cb58-2"><a href="neural-network.html#cb58-2" tabindex="-1"></a>one_hot <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> carrier <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> data)</span>
+<span id="cb58-3"><a href="neural-network.html#cb58-3" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data, one_hot)</span>
+<span id="cb58-4"><a href="neural-network.html#cb58-4" tabindex="-1"></a>data<span class="sc">$</span>carrier <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
+</details>
+<p>Information is transmitted in this model through the activation of the neurons in each layer. Now, imagine activating all neurons simultaneously would result in a chaotic mix of unrelated information. To address this, “weights”; values tare set randomly at the beginning of the process but are adjusted over time to minimize prediction errors. As Neural networks operate through matrix operations, 3 weight matrices are generated to contain the weighted values of each layer.</p>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Weights</b>
+</summary>
+<pre><code># Initialize weights
+W1 &lt;- matrix(rnorm(input_size * hidden_size1), nrow=input_size, ncol=hidden_size1)
+W2 &lt;- matrix(rnorm(hidden_size1 * hidden_size2), nrow=hidden_size1, ncol=hidden_size2)
+W3 &lt;- matrix(rnorm(hidden_size2 * output_size), nrow=hidden_size2, ncol=output_size)</code></pre>
+</details>
+<p>As the information flows between the network’s layers through the activation of neurons with weights, the biases (b) supports each layer by accounting for any inherent offsets in the data, allowing the model to better fit the training examples.</p>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Bias </b>
+</summary>
+<pre><code># Initialize biases
+b1 &lt;- matrix(rnorm(hidden_size1), nrow=1, ncol=hidden_size1)
+b2 &lt;- matrix(rnorm(hidden_size2), nrow=1, ncol=hidden_size2)
+b3 &lt;- matrix(rnorm(output_size), nrow=1, ncol=output_size)</code></pre>
+</details>
+<p>Below is a visual representation of the architecture of this neural network. For simplicity, the input layer is depicted with only 4 neurons. However, it is important to note that this model actually starts with 16 neurons in the input layer:</p>
+<p><img src="nn.png" /></p>
+</div>
+<div id="training-predicting-process-2" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Training &amp; Predicting Process<a href="neural-network.html#training-predicting-process-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Normally in a training/testing predicting process the the data is split in 2 sets. 80% of the data is allocated for model fitting while the remaining 20% is reserved for the evaluation the model’s predictive accuracy.</p>
+<pre><code># Split the data (80% training, 20% testing) 
+indices &lt;- sample(1:nrow(datat), 0.8 * nrow(data))
+train_data &lt;- data_flight[indices, ]
+test_data &lt;- data_flight[-indices, ]</code></pre>
+<div id="feed-forward-algorithm" class="section level3 hasAnchor" number="7.3.1">
+<h3><span class="header-section-number">7.3.1</span> Feed-forward Algorithm<a href="neural-network.html#feed-forward-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Referring back to the visual representation of the model’s structure from the previous chapter, it’s possible conceptualize the mathematical formula for the first hidden layer (<span class="math inline">\(Z^{1}\)</span>) as a linear combination of neurons in the input layer (<span class="math inline">\(X\)</span>) the weights’ matrix (<span class="math inline">\(W^{1}\)</span>) plus the bias <span class="math inline">\(b^{1}\)</span>:</p>
+<p><span class="math display">\[
+Z^{1} = X \cdot W^{1} + b^{1}
+\]</span></p>
+<p>This formula is at the core of the forward pass where transmitted inputs through the network’s layer result in a predicted output. As the process moves forwards, the components of that formula are replaced by values corresponding to each layer. Additionally, the output of each layer must be normalized before it is transmitted to the next layer, in order to produce a cohesive result and also to facilitate the network’s ability to generalize. This normalization process is carried out by an activation function such Sigmoid or ReLU. In this specific case, Sigmoid squishification is implemented to take the weighted sum of the neurons and squish it into a range between 0 and 1. Basically, in this logistic function negative inputs end up close to zero, positive inputs get closed to one.<span class="math display">\[
+\sigma(x) = \frac{1}{1 + e^{-x}}
+\]</span></p>
+<p>When <span class="math inline">\(x\)</span> is a large negative number, <span class="math inline">\(e^{-x}\)</span> becomes very large. Example, <span class="math inline">\(x = -10, e^{-(-10)} = e^{10}\)</span>. Then, this value will do the fraction <span class="math inline">\(\frac{1}{1+e^{10}}\)</span> very small, approaching zero.</p>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Sigmoid </b>
+</summary>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="neural-network.html#cb62-1" tabindex="-1"></a><span class="co"># Sigmoid activation function</span></span>
+<span id="cb62-2"><a href="neural-network.html#cb62-2" tabindex="-1"></a>sigmoid <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb62-3"><a href="neural-network.html#cb62-3" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>x))</span>
+<span id="cb62-4"><a href="neural-network.html#cb62-4" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<p>With all components defined, the forward pass can be initiated. Additionally, a Cost function is set to measure the network’s performance. This Cost function (also called Loss function) quantifies the error between the predicted output (<span class="math inline">\(\hat{y}\)</span>) and the actual output (<span class="math inline">\(y\)</span>). In this exercise, the Cost function is the Mean Squared Error (MSE).</p>
+<p><span class="math display">\[
+L(\hat{y}, y) = (\hat{y} - y)^2
+\]</span></p>
+<pre><code># Feed-forward    
+input &lt;- train_data[, -ncol(train_data)]  
+Z1_train &lt;- as.matrix(input) %*% W1 + matrix(b1, nrow=nrow(train_data), ncol=ncol(b1)) 
+A1_train &lt;- sigmoid(Z1_train)  
+Z2_train &lt;- A1_train %*% W2 + matrix(b2, nrow = nrow(A1_train), ncol = ncol(b2))  
+A2_train &lt;- sigmoid(Z2_train)  
+
+# No activation function for the last layer as this is a regression problem
+Z3_train &lt;- A2_train %*% W3 + matrix(b3, nrow = nrow(A2_train), ncol = ncol(b3))
+predicted_output_train &lt;- Z3_train   
+
+# Calculate mean squared error for training data 
+cost_train &lt;- mean((predicted_output_train - train_data$arr_delay)^2)</code></pre>
+<pre><code>## Cost previous to iterations: 1973.661 
+## AVG Cost per sample: 0.5068467</code></pre>
+<p>The high total cost indicates that the predictions are far from the actual values, which is expected since the model hasn’t undergone any training iterations yet. The learning abilities of Neural Networks highly rely in an iterative process to adjust the weights. To enhance the model’s performance, we need to define the number of training cycles, or epochs. Here, we set the number of epochs to 10, but this can be adjusted based on the model’s prediction accuracy.</p>
+<pre><code>epochs &lt;- 10</code></pre>
+<p>Additionally all the operations presented till now constitute only one section of the learning process. The cost is high because the model hasn’t received any clues to establish the correct direction to minimize the Cost, which is the ultimate goal of this process. To achieve it, the gradient of the cost function must be calculated.</p>
+</div>
+<div id="backpropagation" class="section level3 hasAnchor" number="7.3.2">
+<h3><span class="header-section-number">7.3.2</span> Backpropagation<a href="neural-network.html#backpropagation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Self-training in machine learning refers to a model’s ability to iteratively analyze input data and learn to improve performance. In Backpropagation, the process is carried out backward, transmitting the error between predicted and actual outputs to previous layers. This adjusts weights and biases, minimizing the cost function.</p>
+<p>Minimization occurs when the model identifies the direction to reduce the cost, guided by the gradient of the cost function. If the slope is positive, moving in the negative gradient direction decreases the cost, and viceversa if the slope is negative.</p>
+<p>Mathematically, partial derivatives determine the gradient. The partial derivative of the cost function with respect to weights is denoted as <span class="math inline">\(\frac{\partial Cost}{ \partial W^{(L)}}\)</span>. The weights are related to the values of a previous layer’s weighted input <span class="math inline">\(Z^{(L)}\)</span>and its activation function <span class="math inline">\(a^{(L)}\)</span></p>
+<ol style="list-style-type: decimal">
+<li><p>The derivative of <span class="math inline">\(Z^{(L)}\)</span> with respect to <span class="math inline">\(W^{(L)}\)</span> is <span class="math inline">\(\frac{\partial Z^{(L)}}{\partial W^{(L)}} = a^{(L-1)}\)</span></p></li>
+<li><p>The derivative of the activation function <span class="math inline">\(a^{(L)}\)</span> with respect to <span class="math inline">\(Z^{(L)}\)</span> is <span class="math inline">\(\frac{\partial a^{(L)}}{\partial Z^{(L)}} = \sigma&#39;(Z^{(L)})\)</span></p></li>
+<li><p>The derivative of the cost with respect to the activation <span class="math inline">\(a^{(L)}\)</span> is <span class="math inline">\(\frac{\partial Cost}{\partial a^{(L)}} = 2 (a^{(L)} - y)\)</span>.</p></li>
+</ol>
+<p>Therefore, the formula for Backpropagation can be defined as follows:</p>
+<p><span class="math display">\[
+\frac{\partial Cost}{\partial W^{(L)}} = \frac{\partial Z^{(L)}}{\partial W^{(L)}} \cdot \frac{\partial a^{(L)}}{\partial Z^{(L)}} \cdot \frac{\partial Cost }{\partial a^{(L)}}
+\]</span></p>
+<p>Before initiating the code for Backpropagation, the derivative of the sigmoid function is defined:</p>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Sigmoid Derivative </b>
+</summary>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="neural-network.html#cb66-1" tabindex="-1"></a><span class="co"># Derivative of sigmoid function</span></span>
+<span id="cb66-2"><a href="neural-network.html#cb66-2" tabindex="-1"></a>sigmoid_derivative <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb66-3"><a href="neural-network.html#cb66-3" tabindex="-1"></a>  <span class="fu">sigmoid</span>(x) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sigmoid</span>(x))</span>
+<span id="cb66-4"><a href="neural-network.html#cb66-4" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<p> </p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="neural-network.html#cb67-1" tabindex="-1"></a>dZ3_train <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (predicted_output_train <span class="sc">-</span> train_data<span class="sc">$</span>arr_delay)</span>
+<span id="cb67-2"><a href="neural-network.html#cb67-2" tabindex="-1"></a>dW3 <span class="ot">&lt;-</span> <span class="fu">t</span>(A2_train) <span class="sc">%*%</span> dZ3_train <span class="co"># First multiplication</span></span>
+<span id="cb67-3"><a href="neural-network.html#cb67-3" tabindex="-1"></a>dA2_train <span class="ot">&lt;-</span> dZ3_train <span class="sc">%*%</span> <span class="fu">t</span>(W3) <span class="co"># First error propagation </span></span>
+<span id="cb67-4"><a href="neural-network.html#cb67-4" tabindex="-1"></a></span>
+<span id="cb67-5"><a href="neural-network.html#cb67-5" tabindex="-1"></a>dZ2_train <span class="ot">&lt;-</span> dA2_train <span class="sc">*</span> <span class="fu">sigmoid_derivative</span>(Z2_train)</span>
+<span id="cb67-6"><a href="neural-network.html#cb67-6" tabindex="-1"></a>dW2 <span class="ot">&lt;-</span> <span class="fu">t</span>(A1_train) <span class="sc">%*%</span> dZ2_train <span class="co"># Second multiplication</span></span>
+<span id="cb67-7"><a href="neural-network.html#cb67-7" tabindex="-1"></a>dA1_train <span class="ot">&lt;-</span> dZ2_train <span class="sc">%*%</span> <span class="fu">t</span>(W2) <span class="co"># Second error propagation </span></span>
+<span id="cb67-8"><a href="neural-network.html#cb67-8" tabindex="-1"></a></span>
+<span id="cb67-9"><a href="neural-network.html#cb67-9" tabindex="-1"></a>dZ1_train <span class="ot">&lt;-</span> dA1_train <span class="sc">*</span> <span class="fu">sigmoid_derivative</span>(Z1_train)</span>
+<span id="cb67-10"><a href="neural-network.html#cb67-10" tabindex="-1"></a>dW1 <span class="ot">&lt;-</span> <span class="fu">t</span>(input) <span class="sc">%*%</span> dZ1_train <span class="co"># Third multiplication</span></span></code></pre></div>
+<p>The process is concluded with the update of the weights which, in gradient descent, is given by the formula:</p>
+<p><span class="math display">\[W^{(L)} \leftarrow W^{(L)} - \eta \frac{\partial Cost}{\partial W^{(L)}}\]</span></p>
+<p>where <span class="math inline">\(\eta\)</span> is the learning ratio, set to 0.01 in this specific case. The learning rate controls the size of the adjustments made to the model’s weights during training. A learning rate of 0.01 indicates that the weights are updated in small increments, which helps in gradually minimizing the error without overshooting the optimal values.</p>
+<pre><code>learning_rate = 0.01 </code></pre>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Update </b>
+</summary>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="neural-network.html#cb69-1" tabindex="-1"></a><span class="co"># Update of weights and bias </span></span>
+<span id="cb69-2"><a href="neural-network.html#cb69-2" tabindex="-1"></a>W3 <span class="ot">&lt;-</span> W3 <span class="sc">-</span> learning_rate <span class="sc">*</span> dW3</span>
+<span id="cb69-3"><a href="neural-network.html#cb69-3" tabindex="-1"></a>b3 <span class="ot">&lt;-</span> b3 <span class="sc">-</span> learning_rate <span class="sc">*</span> db3</span>
+<span id="cb69-4"><a href="neural-network.html#cb69-4" tabindex="-1"></a>W2 <span class="ot">&lt;-</span> W2 <span class="sc">-</span> learning_rate <span class="sc">*</span> dW2</span>
+<span id="cb69-5"><a href="neural-network.html#cb69-5" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> b2 <span class="sc">-</span> learning_rate <span class="sc">*</span> db2</span>
+<span id="cb69-6"><a href="neural-network.html#cb69-6" tabindex="-1"></a>W1 <span class="ot">&lt;-</span> W1 <span class="sc">-</span> learning_rate <span class="sc">*</span> dW1</span>
+<span id="cb69-7"><a href="neural-network.html#cb69-7" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> b1 <span class="sc">-</span> learning_rate <span class="sc">*</span> db1</span></code></pre></div>
+</details>
+<p>With that, the explanation of the neural network training process is concluded. The remaining task is to iterate over this process repeatedly to refine the model’s performance. In our case, the model will undergo 10 iterations, as the number of epochs was initially set to that value. To view the implementation of the full code with these iterations, click on Code Preview.</p>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Code Preview </b>
+</summary>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="neural-network.html#cb70-1" tabindex="-1"></a><span class="co"># Training loop function with adjusted learning rate</span></span>
+<span id="cb70-2"><a href="neural-network.html#cb70-2" tabindex="-1"></a>train_model <span class="ot">&lt;-</span> <span class="cf">function</span>(train_data, W1, W2, W3, b1, b2, b3, epochs, learning_rate) {</span>
+<span id="cb70-3"><a href="neural-network.html#cb70-3" tabindex="-1"></a>  <span class="cf">for</span> (epoch <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>epochs) {</span>
+<span id="cb70-4"><a href="neural-network.html#cb70-4" tabindex="-1"></a>    input <span class="ot">&lt;-</span> train_data[, <span class="sc">-</span><span class="fu">ncol</span>(train_data)]</span>
+<span id="cb70-5"><a href="neural-network.html#cb70-5" tabindex="-1"></a>    Z1_train <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(input) <span class="sc">%*%</span> W1 <span class="sc">+</span> <span class="fu">matrix</span>(b1, <span class="at">nrow=</span><span class="fu">nrow</span>(train_data), <span class="at">ncol=</span><span class="fu">ncol</span>(b1))</span>
+<span id="cb70-6"><a href="neural-network.html#cb70-6" tabindex="-1"></a>    A1_train <span class="ot">&lt;-</span> <span class="fu">sigmoid</span>(Z1_train)</span>
+<span id="cb70-7"><a href="neural-network.html#cb70-7" tabindex="-1"></a>    Z2_train <span class="ot">&lt;-</span> A1_train <span class="sc">%*%</span> W2 <span class="sc">+</span> <span class="fu">matrix</span>(b2, <span class="at">nrow =</span> <span class="fu">nrow</span>(A1_train), <span class="at">ncol =</span> <span class="fu">ncol</span>(b2))</span>
+<span id="cb70-8"><a href="neural-network.html#cb70-8" tabindex="-1"></a>    A2_train <span class="ot">&lt;-</span> <span class="fu">sigmoid</span>(Z2_train)</span>
+<span id="cb70-9"><a href="neural-network.html#cb70-9" tabindex="-1"></a>    Z3_train <span class="ot">&lt;-</span> A2_train <span class="sc">%*%</span> W3 <span class="sc">+</span> <span class="fu">matrix</span>(b3, <span class="at">nrow =</span> <span class="fu">nrow</span>(A2_train), <span class="at">ncol =</span> <span class="fu">ncol</span>(b3))</span>
+<span id="cb70-10"><a href="neural-network.html#cb70-10" tabindex="-1"></a>    predicted_output_train <span class="ot">&lt;-</span> Z3_train</span>
+<span id="cb70-11"><a href="neural-network.html#cb70-11" tabindex="-1"></a></span>
+<span id="cb70-12"><a href="neural-network.html#cb70-12" tabindex="-1"></a>    <span class="co"># Calculate mean squared error for training data</span></span>
+<span id="cb70-13"><a href="neural-network.html#cb70-13" tabindex="-1"></a>    loss_train <span class="ot">&lt;-</span> <span class="fu">mean</span>((predicted_output_train <span class="sc">-</span> train_data<span class="sc">$</span>arr_delay)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb70-14"><a href="neural-network.html#cb70-14" tabindex="-1"></a></span>
+<span id="cb70-15"><a href="neural-network.html#cb70-15" tabindex="-1"></a>    dZ3_train <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (predicted_output_train <span class="sc">-</span> train_data<span class="sc">$</span>arr_delay)</span>
+<span id="cb70-16"><a href="neural-network.html#cb70-16" tabindex="-1"></a>    dW3 <span class="ot">&lt;-</span> <span class="fu">t</span>(A2_train) <span class="sc">%*%</span> dZ3_train <span class="co"># First multiplication</span></span>
+<span id="cb70-17"><a href="neural-network.html#cb70-17" tabindex="-1"></a>    dA2_train <span class="ot">&lt;-</span> dZ3_train <span class="sc">%*%</span> <span class="fu">t</span>(W3) <span class="co"># First error propagation </span></span>
+<span id="cb70-18"><a href="neural-network.html#cb70-18" tabindex="-1"></a></span>
+<span id="cb70-19"><a href="neural-network.html#cb70-19" tabindex="-1"></a>    dZ2_train <span class="ot">&lt;-</span> dA2_train <span class="sc">*</span> <span class="fu">sigmoid_derivative</span>(Z2_train)</span>
+<span id="cb70-20"><a href="neural-network.html#cb70-20" tabindex="-1"></a>    dW2 <span class="ot">&lt;-</span> <span class="fu">t</span>(A1_train) <span class="sc">%*%</span> dZ2_train <span class="co"># Second multiplication</span></span>
+<span id="cb70-21"><a href="neural-network.html#cb70-21" tabindex="-1"></a>    dA1_train <span class="ot">&lt;-</span> dZ2_train <span class="sc">%*%</span> <span class="fu">t</span>(W2) <span class="co"># Second error propagation </span></span>
+<span id="cb70-22"><a href="neural-network.html#cb70-22" tabindex="-1"></a></span>
+<span id="cb70-23"><a href="neural-network.html#cb70-23" tabindex="-1"></a>    dZ1_train <span class="ot">&lt;-</span> dA1_train <span class="sc">*</span> <span class="fu">sigmoid_derivative</span>(Z1_train)</span>
+<span id="cb70-24"><a href="neural-network.html#cb70-24" tabindex="-1"></a>    dW1 <span class="ot">&lt;-</span> <span class="fu">t</span>(input) <span class="sc">%*%</span> dZ1_train <span class="co"># Third multiplication</span></span>
+<span id="cb70-25"><a href="neural-network.html#cb70-25" tabindex="-1"></a></span>
+<span id="cb70-26"><a href="neural-network.html#cb70-26" tabindex="-1"></a>    <span class="co"># Bias</span></span>
+<span id="cb70-27"><a href="neural-network.html#cb70-27" tabindex="-1"></a>    db3 <span class="ot">&lt;-</span> <span class="fu">colSums</span>(dZ3_train)</span>
+<span id="cb70-28"><a href="neural-network.html#cb70-28" tabindex="-1"></a>    db2 <span class="ot">&lt;-</span> <span class="fu">colSums</span>(dZ2_train)</span>
+<span id="cb70-29"><a href="neural-network.html#cb70-29" tabindex="-1"></a>    db1 <span class="ot">&lt;-</span> <span class="fu">colSums</span>(dZ1_train)</span>
+<span id="cb70-30"><a href="neural-network.html#cb70-30" tabindex="-1"></a>    </span>
+<span id="cb70-31"><a href="neural-network.html#cb70-31" tabindex="-1"></a>    <span class="co"># Gradient Clipping. to prevent gradient becoming to large</span></span>
+<span id="cb70-32"><a href="neural-network.html#cb70-32" tabindex="-1"></a>    clip_value <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb70-33"><a href="neural-network.html#cb70-33" tabindex="-1"></a>    dW3 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(dW3, clip_value), <span class="sc">-</span>clip_value)</span>
+<span id="cb70-34"><a href="neural-network.html#cb70-34" tabindex="-1"></a>    dW2 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(dW2, clip_value), <span class="sc">-</span>clip_value)</span>
+<span id="cb70-35"><a href="neural-network.html#cb70-35" tabindex="-1"></a>    dW1 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(dW1, clip_value), <span class="sc">-</span>clip_value)</span>
+<span id="cb70-36"><a href="neural-network.html#cb70-36" tabindex="-1"></a>    db3 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(db3, clip_value), <span class="sc">-</span>clip_value)</span>
+<span id="cb70-37"><a href="neural-network.html#cb70-37" tabindex="-1"></a>    db2 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(db2, clip_value), <span class="sc">-</span>clip_value)</span>
+<span id="cb70-38"><a href="neural-network.html#cb70-38" tabindex="-1"></a>    db1 <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(db1, clip_value), <span class="sc">-</span>clip_value)</span>
+<span id="cb70-39"><a href="neural-network.html#cb70-39" tabindex="-1"></a></span>
+<span id="cb70-40"><a href="neural-network.html#cb70-40" tabindex="-1"></a>    <span class="co"># Update of weights and bias </span></span>
+<span id="cb70-41"><a href="neural-network.html#cb70-41" tabindex="-1"></a>    W3 <span class="ot">&lt;-</span> W3 <span class="sc">-</span> learning_rate <span class="sc">*</span> dW3</span>
+<span id="cb70-42"><a href="neural-network.html#cb70-42" tabindex="-1"></a>    b3 <span class="ot">&lt;-</span> b3 <span class="sc">-</span> learning_rate <span class="sc">*</span> db3</span>
+<span id="cb70-43"><a href="neural-network.html#cb70-43" tabindex="-1"></a>    W2 <span class="ot">&lt;-</span> W2 <span class="sc">-</span> learning_rate <span class="sc">*</span> dW2</span>
+<span id="cb70-44"><a href="neural-network.html#cb70-44" tabindex="-1"></a>    b2 <span class="ot">&lt;-</span> b2 <span class="sc">-</span> learning_rate <span class="sc">*</span> db2</span>
+<span id="cb70-45"><a href="neural-network.html#cb70-45" tabindex="-1"></a>    W1 <span class="ot">&lt;-</span> W1 <span class="sc">-</span> learning_rate <span class="sc">*</span> dW1</span>
+<span id="cb70-46"><a href="neural-network.html#cb70-46" tabindex="-1"></a>    b1 <span class="ot">&lt;-</span> b1 <span class="sc">-</span> learning_rate <span class="sc">*</span> db1</span>
+<span id="cb70-47"><a href="neural-network.html#cb70-47" tabindex="-1"></a></span>
+<span id="cb70-48"><a href="neural-network.html#cb70-48" tabindex="-1"></a>    <span class="co"># Print loss for monitoring</span></span>
+<span id="cb70-49"><a href="neural-network.html#cb70-49" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Epoch:&quot;</span>, epoch, <span class="st">&quot; - Loss (Training):&quot;</span>, loss_train, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb70-50"><a href="neural-network.html#cb70-50" tabindex="-1"></a>  }</span>
+<span id="cb70-51"><a href="neural-network.html#cb70-51" tabindex="-1"></a>  </span>
+<span id="cb70-52"><a href="neural-network.html#cb70-52" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">W1 =</span> W1, <span class="at">W2 =</span> W2, <span class="at">W3 =</span> W3, <span class="at">b1 =</span> b1, <span class="at">b2 =</span> b2, <span class="at">b3 =</span> b3)</span>
+<span id="cb70-53"><a href="neural-network.html#cb70-53" tabindex="-1"></a>}</span>
+<span id="cb70-54"><a href="neural-network.html#cb70-54" tabindex="-1"></a></span>
+<span id="cb70-55"><a href="neural-network.html#cb70-55" tabindex="-1"></a><span class="co"># Call the train_model function with the adjusted learning rate</span></span>
+<span id="cb70-56"><a href="neural-network.html#cb70-56" tabindex="-1"></a>updated_parameters <span class="ot">&lt;-</span> <span class="fu">train_model</span>(train_data, </span>
+<span id="cb70-57"><a href="neural-network.html#cb70-57" tabindex="-1"></a>                                  W1, W2, W3, </span>
+<span id="cb70-58"><a href="neural-network.html#cb70-58" tabindex="-1"></a>                                  b1, b2, b3, </span>
+<span id="cb70-59"><a href="neural-network.html#cb70-59" tabindex="-1"></a>                                  epochs, </span>
+<span id="cb70-60"><a href="neural-network.html#cb70-60" tabindex="-1"></a>                                  learning_rate)</span></code></pre></div>
+<pre><code>## Epoch: 1  - Loss (Training): 2002.533 
+## Epoch: 2  - Loss (Training): 1939.68 
+## Epoch: 3  - Loss (Training): 1837.457 
+## Epoch: 4  - Loss (Training): 1739.89 
+## Epoch: 5  - Loss (Training): 1678.186 
+## Epoch: 6  - Loss (Training): 1873.737 
+## Epoch: 7  - Loss (Training): 2213.296 
+## Epoch: 8  - Loss (Training): 1621.107 
+## Epoch: 9  - Loss (Training): 1581.032 
+## Epoch: 10  - Loss (Training): 1541.294 
+## Epoch: 11  - Loss (Training): 1501.356 
+## Epoch: 12  - Loss (Training): 1462.962 
+## Epoch: 13  - Loss (Training): 1600.802 
+## Epoch: 14  - Loss (Training): 1394.36 
+## Epoch: 15  - Loss (Training): 1790.194 
+## Epoch: 16  - Loss (Training): 1392.42 
+## Epoch: 17  - Loss (Training): 1728.941 
+## Epoch: 18  - Loss (Training): 1301.008 
+## Epoch: 19  - Loss (Training): 1695.775 
+## Epoch: 20  - Loss (Training): 1253.605 
+## Epoch: 21  - Loss (Training): 1659.647 
+## Epoch: 22  - Loss (Training): 1221.139 
+## Epoch: 23  - Loss (Training): 1631.177 
+## Epoch: 24  - Loss (Training): 1163.037 
+## Epoch: 25  - Loss (Training): 1654.488 
+## Epoch: 26  - Loss (Training): 1135.523 
+## Epoch: 27  - Loss (Training): 1635.576 
+## Epoch: 28  - Loss (Training): 1110.887 
+## Epoch: 29  - Loss (Training): 1618.336 
+## Epoch: 30  - Loss (Training): 1092.078 
+## Epoch: 31  - Loss (Training): 1527.634 
+## Epoch: 32  - Loss (Training): 1089.671 
+## Epoch: 33  - Loss (Training): 1504.699 
+## Epoch: 34  - Loss (Training): 1073.576 
+## Epoch: 35  - Loss (Training): 1483.005 
+## Epoch: 36  - Loss (Training): 1058.288 
+## Epoch: 37  - Loss (Training): 1467.154 
+## Epoch: 38  - Loss (Training): 1049.159 
+## Epoch: 39  - Loss (Training): 1451.484 
+## Epoch: 40  - Loss (Training): 1038.714 
+## Epoch: 41  - Loss (Training): 1439.32 
+## Epoch: 42  - Loss (Training): 1040.032 
+## Epoch: 43  - Loss (Training): 1428.715 
+## Epoch: 44  - Loss (Training): 1037.947 
+## Epoch: 45  - Loss (Training): 1416.46 
+## Epoch: 46  - Loss (Training): 1028.57 
+## Epoch: 47  - Loss (Training): 2336.064 
+## Epoch: 48  - Loss (Training): 1097.746 
+## Epoch: 49  - Loss (Training): 1085.115 
+## Epoch: 50  - Loss (Training): 988.8929 
+## Epoch: 51  - Loss (Training): 1034.588 
+## Epoch: 52  - Loss (Training): 1088.998 
+## Epoch: 53  - Loss (Training): 1024.318 
+## Epoch: 54  - Loss (Training): 987.7465 
+## Epoch: 55  - Loss (Training): 986.9891 
+## Epoch: 56  - Loss (Training): 1103.72 
+## Epoch: 57  - Loss (Training): 976.7364 
+## Epoch: 58  - Loss (Training): 1098.627 
+## Epoch: 59  - Loss (Training): 969.0878 
+## Epoch: 60  - Loss (Training): 1097.695 
+## Epoch: 61  - Loss (Training): 960.647 
+## Epoch: 62  - Loss (Training): 1099.25 
+## Epoch: 63  - Loss (Training): 952.2167 
+## Epoch: 64  - Loss (Training): 1102.652 
+## Epoch: 65  - Loss (Training): 945.6094 
+## Epoch: 66  - Loss (Training): 1006.211 
+## Epoch: 67  - Loss (Training): 939.0979 
+## Epoch: 68  - Loss (Training): 1110.306 
+## Epoch: 69  - Loss (Training): 932.8845 
+## Epoch: 70  - Loss (Training): 1113.977 
+## Epoch: 71  - Loss (Training): 929.0473 
+## Epoch: 72  - Loss (Training): 1013.099 
+## Epoch: 73  - Loss (Training): 914.9852 
+## Epoch: 74  - Loss (Training): 1047.083 
+## Epoch: 75  - Loss (Training): 914.3144 
+## Epoch: 76  - Loss (Training): 1037.97 
+## Epoch: 77  - Loss (Training): 914.2082 
+## Epoch: 78  - Loss (Training): 1155.68 
+## Epoch: 79  - Loss (Training): 912.1165 
+## Epoch: 80  - Loss (Training): 1031.937 
+## Epoch: 81  - Loss (Training): 910.0517 
+## Epoch: 82  - Loss (Training): 1028.026 
+## Epoch: 83  - Loss (Training): 909.1717 
+## Epoch: 84  - Loss (Training): 1018.629 
+## Epoch: 85  - Loss (Training): 908.0742 
+## Epoch: 86  - Loss (Training): 1014.12 
+## Epoch: 87  - Loss (Training): 905.119 
+## Epoch: 88  - Loss (Training): 1011.756 
+## Epoch: 89  - Loss (Training): 905.4758 
+## Epoch: 90  - Loss (Training): 1008.495 
+## Epoch: 91  - Loss (Training): 904.4414 
+## Epoch: 92  - Loss (Training): 1001.232 
+## Epoch: 93  - Loss (Training): 927.811 
+## Epoch: 94  - Loss (Training): 999.2898 
+## Epoch: 95  - Loss (Training): 904.6963 
+## Epoch: 96  - Loss (Training): 995.6421 
+## Epoch: 97  - Loss (Training): 925.984 
+## Epoch: 98  - Loss (Training): 994.6018 
+## Epoch: 99  - Loss (Training): 897.3991</code></pre>
+</details>
+<p> </p>
+<p>Initially, with 10 epochs and a learning rate of 0.01, the training process showed signs of divergence.This means that the loss was increasing exponentially instead of decreasing, which is the opposite of what should ideally happen. To address this issue, the learning rate was adjusted to 0.0002 to ensure more gradual updates to the model weights. Additionally, the weight matrices were normalized with a mean of 0 and a standard deviation of 0.01. The number of epochs was extended to 99 and gradient clipping was set to prevent the gradients from getting too large. Here are some observations based on the provided results:</p>
+<ol style="list-style-type: decimal">
+<li><p>Convergence: The loss was decreasing rapidly after the clip value was set to 5000. The last achieve value is around 897.3. This indicates that the model has converged. Further training epochs might be needed to significant improvements in the loss.</p></li>
+<li><p>Stability: Generally the loss has a tendency to decrease, however there are intermittent value fluctuations.</p></li>
+<li><p>Learning Rate: The chosen learning rate of 0.0002 seems to be appropriate for the training process, allowing the model to make consistent progress in reducing the loss over the epochs.</p></li>
+<li><p>Effectiveness: The final loss achieved after 99 epochs, indicating that the model has learned from the data effectively.</p></li>
+</ol>
+<p>A Feed-forward architecture is created to assess the model’s predictive abilities with the testing data.</p>
+<details>
+<summary>
+<b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Predict model </b>
+</summary>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="neural-network.html#cb72-1" tabindex="-1"></a>predict_model <span class="ot">&lt;-</span> <span class="cf">function</span>(test_data, W1, W2, W3, b1, b2, b3) {</span>
+<span id="cb72-2"><a href="neural-network.html#cb72-2" tabindex="-1"></a>  input <span class="ot">&lt;-</span> test_data[, <span class="sc">-</span><span class="fu">ncol</span>(test_data)]</span>
+<span id="cb72-3"><a href="neural-network.html#cb72-3" tabindex="-1"></a>  Z1_test <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(input) <span class="sc">%*%</span> W1 <span class="sc">+</span> <span class="fu">matrix</span>(b1, <span class="at">nrow=</span><span class="fu">nrow</span>(test_data), <span class="at">ncol=</span><span class="fu">ncol</span>(b1))</span>
+<span id="cb72-4"><a href="neural-network.html#cb72-4" tabindex="-1"></a>  A1_test <span class="ot">&lt;-</span> <span class="fu">sigmoid</span>(Z1_test)</span>
+<span id="cb72-5"><a href="neural-network.html#cb72-5" tabindex="-1"></a>  Z2_test <span class="ot">&lt;-</span> A1_test <span class="sc">%*%</span> W2 <span class="sc">+</span> <span class="fu">matrix</span>(b2, <span class="at">nrow=</span><span class="fu">nrow</span>(A1_test), <span class="at">ncol=</span><span class="fu">ncol</span>(b2))</span>
+<span id="cb72-6"><a href="neural-network.html#cb72-6" tabindex="-1"></a>  A2_test <span class="ot">&lt;-</span> <span class="fu">sigmoid</span>(Z2_test)</span>
+<span id="cb72-7"><a href="neural-network.html#cb72-7" tabindex="-1"></a>  Z3_test <span class="ot">&lt;-</span> A2_test <span class="sc">%*%</span> W3 <span class="sc">+</span> <span class="fu">matrix</span>(b3, <span class="at">nrow=</span><span class="fu">nrow</span>(A2_test), <span class="at">ncol=</span><span class="fu">ncol</span>(b3))</span>
+<span id="cb72-8"><a href="neural-network.html#cb72-8" tabindex="-1"></a>  predicted_output_test <span class="ot">&lt;-</span> Z3_test</span>
+<span id="cb72-9"><a href="neural-network.html#cb72-9" tabindex="-1"></a>  <span class="fu">return</span>(predicted_output_test)</span>
+<span id="cb72-10"><a href="neural-network.html#cb72-10" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
+<pre><code>## Mean Squared Error on Test Data: 1190.679</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ce771883bf5b9c3df408" style="width:7680px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ce771883bf5b9c3df408">{"x":{"visdat":{"4f385413440f":["function () ","plotlyVisDat"]},"cur_data":"4f385413440f","attrs":{"4f385413440f":{"x":{},"y":{},"mode":"lines","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Actual vs Predicted Arrivals Delay","xaxis":{"domain":[0,1],"automargin":true,"title":"Observation Index"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Arrivals Delay"},"legend":{"title":"Legend","x":0,"y":-0.20000000000000001,"orientation":"h"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,758,759,760,761,762,763,764,765,766,767,768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,864,865,866,867,868,869,870,871,872,873,874,875,876,877,878,879,880,881,882,883,884,885,886,887,888,889,890,891,892,893,894,895,896,897,898,899,900,901,902,903,904,905,906,907,908,909,910,911,912,913,914,915,916,917,918,919,920,921,922,923,924,925,926,927,928,929,930,931,932,933,934,935,936,937,938,939,940,941,942,943,944,945,946,947,948,949,950,951,952,953,954,955,956,957,958,959,960,961,962,963,964,965,966,967,968,969,970,971,972,973,974],"y":[-18,10,-2,0,103,172,30,-7,-21,-3,0,16,-24,-23,80,29,-20,-22,-29,127,-11,96,-11,-26,26,-16,20,-2,-6,-11,67,-23,-23,-3,-8,27,-39,4,-15,-20,-13,7,4,14,-19,42,-13,4,-28,80,-9,-14,9,9,-4,-23,-22,11,20,-8,-23,-20,-8,-18,-8,-26,0,-23,-1,-44,-6,-27,160,25,60,-3,-13,-19,-26,8,-19,0,3,19,-14,43,-12,4,-38,7,-29,-5,61,-9,1,4,-15,-20,97,-6,-2,-25,-19,-16,-11,-24,-13,-3,-14,73,4,2,-17,36,6,-12,107,-10,-25,-14,179,-11,-42,-6,-26,-10,-9,-20,36,52,-45,6,-26,2,-15,-5,-7,18,49,-15,-24,20,-26,-32,6,-2,71,-22,242,-3,-12,-20,1,-3,87,-17,-21,2,21,10,7,19,-1,14,37,2,57,-34,10,7,2,11,-23,-16,0,14,-37,-38,127,-9,-6,-2,185,-18,-25,-4,-13,108,-19,15,-16,-21,3,-37,3,17,7,-7,-53,17,57,14,-1,31,7,-20,-20,32,31,-13,-39,38,78,47,-9,5,-4,-15,-16,14,20,-14,-26,31,8,-7,-19,19,-26,67,-33,4,1,-20,-6,-8,-24,35,-18,232,-14,-12,-24,-9,-25,-5,8,-12,-5,-3,8,-6,91,-25,-8,166,81,-26,-5,19,60,-36,-21,-28,23,-2,-35,-11,-37,-15,0,-16,-3,-17,2,-22,5,-16,-15,44,6,-35,-12,30,26,-5,26,5,40,5,-9,-13,-19,18,-10,12,-4,-8,-9,0,3,-6,-21,-11,42,-2,-7,27,35,32,-22,1,7,24,95,-8,2,-1,20,3,12,2,8,-7,7,-24,-19,-17,-16,104,-46,11,-5,69,-18,-27,-14,10,-2,5,66,15,-9,8,-9,-19,-13,-4,-10,65,-22,-2,46,-10,1,5,11,-15,37,-20,11,-4,3,-20,-21,-15,2,16,-23,20,27,11,0,-32,-15,-41,0,15,-31,30,-2,0,-16,62,-20,8,-24,-7,-10,21,3,-3,-11,1,-9,-18,-16,-17,39,-25,15,-12,93,-13,-18,-4,-7,-30,1,-20,-17,3,-11,11,15,-18,-6,-26,-25,-4,4,18,-13,4,-22,-22,-5,-16,-6,8,24,-11,5,24,-16,96,-19,-15,3,40,-21,-26,25,11,4,-11,-10,-5,13,-18,17,19,87,-21,67,9,-1,107,8,-21,-36,50,-34,4,-13,-19,-21,5,-39,-15,49,-8,12,105,-6,65,-17,35,8,-16,2,2,-30,144,167,-14,-11,21,10,3,15,12,-3,-6,-14,156,30,-13,1,72,152,217,42,37,48,-14,14,2,-1,-13,-3,-18,-20,-14,-16,0,-2,19,7,12,-16,22,-23,-24,-24,-3,-30,3,-23,-19,-11,0,-10,-8,-14,-26,59,-4,129,-13,-17,-15,-18,-29,-33,110,5,7,-2,-7,-41,40,-19,43,-4,0,10,-38,-13,-17,9,-12,-26,107,-5,-19,25,-28,-19,-21,-7,-28,-5,-7,97,-7,-15,-17,-30,-33,1,-19,-23,30,16,73,-19,-3,14,-9,2,25,-2,-30,7,-10,-5,13,-8,-12,16,-38,13,-25,-1,-32,-20,-22,57,10,-15,0,70,-11,16,93,-33,11,27,-17,16,-19,-22,-4,14,-31,-17,-30,-15,-21,7,133,6,43,-13,23,-23,-19,2,80,21,-6,17,-11,-21,-1,50,32,-5,207,145,-15,12,188,-37,24,-38,-2,-20,195,25,-3,48,-23,71,-8,-20,2,-24,-20,23,-21,64,12,3,-4,-6,-2,24,-16,-27,0,-9,14,-24,-21,-32,-13,1,42,70,-5,-36,21,-21,-2,79,4,21,21,-19,21,-44,-24,-2,14,-10,-17,48,28,6,-21,236,-13,1,16,-10,5,133,-20,26,12,30,-20,8,-9,24,29,-35,-11,-3,-19,-3,-3,-45,-16,-12,-9,-17,-16,-19,-9,-10,-7,15,-19,-7,-11,36,-2,-20,-34,-18,-12,49,-20,12,-6,-24,-25,-38,-5,-15,-19,-32,5,11,41,-11,20,53,21,-26,-27,-11,-16,-29,1,-7,-29,-26,-14,-11,12,-20,-14,-5,-30,0,-17,-7,-10,42,-3,-22,12,-2,-20,-12,4,-7,53,3,56,0,4,4,12,6,-16,-16,15,12,-2,-17,-7,-36,14,1,-5,4,9,-1,-25,-6,4,17,-6,162,20,6,-16,-3,-10,-9,-10,51,68,-36,30,42,-29,4,-15,-14,-6,-7,-34,31,-17,179,4,26,-48,-7,64,158,108,-19,-4,189,-25,-25,-15,49,-10,-7,-26,54,-3,31,65,-1,10,15,-6,-3,66,186,30,2,-1,-24,-15,-43,-10,36,-41,74,-17,-7,-17,1,-31,45,-21,-19,11,-24,-23,-4,-26,4,2,3,-23,68,-16,87,25,-25,-9,-5,-53,-9,145,-9,-17,0,-4,8,-19,-5,-17,36,63,18,2,24,-18,68,-22,-40,-22,-9,-15,-1,121,16,27,-18,-15,-19,6,7,-4,-2,-17,10,13,-25,-23,23,-27,-13,-3,-9,21,3,-2,-4,-23,31,15,5,-29,22,-26,-8,-34,-7,18,-7,-16],"mode":"lines","type":"scatter","name":"Actual","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,758,759,760,761,762,763,764,765,766,767,768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,864,865,866,867,868,869,870,871,872,873,874,875,876,877,878,879,880,881,882,883,884,885,886,887,888,889,890,891,892,893,894,895,896,897,898,899,900,901,902,903,904,905,906,907,908,909,910,911,912,913,914,915,916,917,918,919,920,921,922,923,924,925,926,927,928,929,930,931,932,933,934,935,936,937,938,939,940,941,942,943,944,945,946,947,948,949,950,951,952,953,954,955,956,957,958,959,960,961,962,963,964,965,966,967,968,969,970,971,972,973,974],"y":[-6.3093647390989096,-6.3093665898276541,70.240516791192704,-6.3093653858193308,58.438558864424849,79.617126428550932,58.438564938906197,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.309366544740528,69.179953923310336,-6.3093647390989096,-6.3093665898275724,79.950457113986673,50.67343081144233,-6.3093665447400422,-6.3080278484741159,-6.3093647390989096,50.67343081144233,-6.307312033686352,50.67343081144233,-6.3093665447405041,-6.3080278484741159,58.438564938906197,-6.3093665898275475,72.407773717371896,-6.3093654132697941,-6.3093665447404037,-6.3080278484741159,58.438564938906197,-6.3093665898276532,-6.307312033686352,-6.30936541327159,-6.309366544740266,69.179953876783173,-6.3093647390989096,-6.3093665898276532,-6.307312033686352,-6.3093654132716193,-6.3093665447404907,69.179953864227599,58.438507417723486,-6.3093665898276541,-6.307312033686352,50.67343081144233,-6.309366544740528,69.179953859532617,-6.3093647390989096,50.6666841667749,-6.3073120336859221,-6.3093654132716193,-6.3093665447405298,69.179953879046991,-6.3093647390989096,-6.3093665898276123,-6.307312033686352,50.67343081144233,-6.3093665447403078,-6.3080278484709265,-6.3093647390989096,-6.3093665898273263,-6.3073120336814572,-6.3093654132716193,-6.3093665447405289,-6.3080278484741159,-6.3093595132908948,-6.3093665897856681,72.376698377352028,-6.3093654132716193,-6.3093665447404037,-6.3080278484741159,58.438564938906197,3.3432961830622068,79.950444783669226,-6.3093654132716068,-6.3093665447388831,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093653959620219,-6.3093665447405298,69.179953858869311,-6.3093647390989096,3.3436967567791944,-6.307312033686352,50.664807529902362,-6.3093665281873337,69.179953858838502,-6.3093647390989096,-6.3093665898276461,79.567958801138616,-6.3093654132716193,-6.3093665447405298,69.179953859532617,-6.3093647390989096,-6.3093665898136795,79.950457114946914,-6.3093654132716193,-6.3093665447405289,-6.3080278484741159,-6.3093647390989096,-6.3093665898276505,-6.307312033686352,-6.3093654132716193,-6.3093665447402216,-5.8466288396914168,-6.3093647390989096,4.6780735716628845,72.407751808108969,-0.18491430068187586,-6.3093665447403673,70.124032475944091,58.438563946587152,-6.3093665897729325,79.950457114946857,-6.3093654132716193,-6.3093665447405289,-6.3080278484741159,58.438564938906197,-6.3093665898276416,-6.307312033686352,-6.3093654132716193,-6.3093665445468874,-6.3080278484741159,-6.3093647390989096,-6.3093665898273263,72.433379521449524,50.67343081144233,-6.3093665014155667,69.179953887683936,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,69.179954098709558,58.438564938906197,-6.3093665898254194,-6.307312033686352,50.67343081144233,-6.3093665447403371,-6.3080278484741159,58.438564425330412,-6.3093665898276541,79.950457110830513,-6.3093654132716193,58.438564938906197,69.179944071117959,-6.3093647390989096,-6.3093665898276541,72.4077496127031,-6.3093654132716095,58.245636788928238,-6.3080278484741159,-6.3093647390989096,-6.3093665898276532,72.407752300440777,50.67343081144233,-6.3093665447405289,69.179968259107838,-6.309364738958152,-6.3093665898276541,72.425663267762303,-0.18491430068187586,7.6744483094992182,-6.3080278484741159,58.438564938906197,-6.3093665898276541,72.407751777073173,50.67343081144233,-6.3093665446760951,-6.3080278484741159,-6.3093647253905845,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,58.43856493735791,-6.3080278484741017,-6.3093647390989096,-6.3093665898276541,79.750340149308926,-6.3093654132716193,-6.3093665447373839,-6.308027304771433,-6.3093647390989096,50.673430540539513,-6.307312033686352,50.67343081144233,-6.3093665447405298,-6.3080278484741159,57.772083876285208,-6.3093665898205558,72.407751808978389,50.67343081144233,-6.3093665447405298,-6.308027848278285,-6.3093647390989105,-6.3093664483470109,79.950416695344359,50.67343081144233,-6.3093665447405298,69.180461764084612,58.438564931462594,-6.309366589827194,-6.307312033686352,50.67343081144233,7.6744482970449814,-6.3080278484741159,-6.3093647390989096,3.3436915454403779,79.950457111376778,50.67343081144233,-6.3093665447405298,69.179953858764748,-6.3093647390989096,-6.3093665898273459,-6.307312033686352,50.67343081144233,-6.3093665446915894,-6.3080278484741159,-6.3093647390989096,3.3436915457501355,72.407751893704699,-6.3093654132716193,-6.3093665447377454,69.179954321412183,-6.3093647390989096,3.712973178182593,-6.307312033686352,50.669788847723176,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,-6.3093665898276532,-6.307312033686352,50.67343081144233,-6.3093665447302287,50.673452781772937,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.3093665447403957,-6.30802653612177,58.438564938851698,-6.3093665897781337,-6.3073101421572009,-6.3093654132696786,-6.3093665447405298,-6.3080278349625853,58.438564938906197,-6.3093665898112796,-6.3073120336814572,50.67343081144233,7.7453549659901677,-6.3080278484741159,-6.3093647390989096,-6.3093665898276523,79.03113121115851,-6.3093654132716193,-6.3093665447095839,-6.3080278484741159,58.438564938906197,-6.3093665898276532,-6.307312033686352,-6.3093654132716193,-6.3093665447296363,-6.3080278484741159,-6.3093647390188163,-6.3093665898276541,53.354072178763744,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,58.422124164697024,-6.3093665898276541,-6.307312033686352,50.67343081144233,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,3.3436915463244938,72.407764909699182,-6.3093654132716193,7.6715473664247709,69.179953858822131,58.438564938906197,-6.3093665898276541,-6.30731203368632,-6.3093654132716193,-6.3093665447401808,69.179953858834978,-6.3093647390989096,-6.3093665898276541,72.341678732118567,-6.3093654132716193,-6.3093665447405174,69.17957360812882,57.520800699165108,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,7.6744519928967163,69.149667333174847,-6.3093647390989096,3.3436915445157238,75.313781755701257,50.67343081144233,-6.309366544732165,69.179948480820713,58.438563195012534,3.253232204481967,79.95045711494646,-6.3093654132716193,-6.3093665447405298,69.153702874198174,58.438564938906197,-6.3093665898276541,72.407756973792118,17.744590923835222,-6.3093665447405298,-6.3080278483434045,58.438563195012534,-6.309366589826233,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,79.617131173584283,-6.3093647390989096,-6.3093665898276541,-6.3073091992326029,50.67343081144233,-6.3093665447402953,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,72.407744818069602,50.653885350516688,7.6928339993319339,69.179964509053548,-6.3093647390989096,-6.3093665898276541,-6.3073120336863351,-6.3093654132716193,-6.309366544740528,-6.3078376031230547,-6.3093647390989096,3.5608609800120474,-6.307312033686352,-6.3093654132703225,7.6744483102323011,-6.3080278484741132,-6.3093621756147966,-6.3093665898276541,72.407751808900557,-6.3093654132716193,7.6744482970364478,-6.3080278484741159,58.438564938906197,-6.3093665898276541,72.407751732085416,-6.3093654132716193,-6.309366544739512,-6.3080278484741159,57.994323676941605,-6.3093665898276541,-6.307312033686352,50.67343081144233,7.674448290315417,69.179953934143697,-6.3093647214035498,-6.3093665896705895,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,69.179953892244569,-6.3093647390989096,3.3436915453015397,70.240516791192704,-6.3093654017413234,-6.3093665447405201,79.25552696799889,-6.3093647390989096,-6.3093665898276532,-6.307312033686352,-6.3093654132716193,-6.3093665447405289,69.179953859125476,57.96597448074624,-6.3093665898276541,-6.307312033686352,-6.3093637429053828,-6.3093665447401497,-6.3080278484741159,-6.3093647390989096,-6.3093665898275448,75.923807686017867,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,58.438564938906197,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,7.5866788381089334,-6.3093665898276399,-6.307312033686352,50.112986643428599,-6.3093665447405289,69.179953859652031,58.438564938906197,-6.3093665898209421,-6.3073120129511056,-6.3093654132716193,-6.3093665447405289,-6.3078949735818632,58.431311779683639,-6.3093665898276505,-6.307312033686352,48.757815587305615,-6.3093665447404437,-6.3080278484741159,-6.3093647390989096,-6.3093665898275804,-6.3073120045089066,50.673430811377536,7.5581790637118251,-6.3080278484741159,58.438468598045063,3.258705726823627,-6.307312033686352,50.67343081144233,-6.3093665447405014,-6.3080278484741159,57.96597448074624,3.343691552680391,-6.307312033686352,-6.3093654132716193,7.6727975260112329,69.179953934143697,58.438518053292569,-6.309366589827138,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,58.438564938906197,-6.3093665897768396,79.950457114937251,-6.3093654132716193,7.6872882926263939,69.179953858775193,-6.3093647108372606,50.67250218229006,72.407752182554731,-6.3093654132716193,-6.3093665447259211,79.07462389294497,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.3093665447398255,69.179953858775008,-6.3093647390989096,-6.3093665898276541,79.933512858627765,-6.3093654132716193,-6.3093665447405298,79.617131173584482,-6.3093647390989096,3.3465904693969373,-6.307312033686352,50.67343081144233,-6.3093665447405298,-6.3080278484741159,1.4465366985645431,-6.3093665898276541,-6.307312033686352,50.67343081144233,58.438564938906197,-6.3080278484741159,-6.3093647390989096,-6.3093632706529208,72.407751808900372,49.58767900357438,-6.3093665447405298,69.179953863443856,-6.3093647390988812,-6.3093665898276381,-6.307312033686352,50.67343081144233,7.6744482970355579,-6.3080278484741159,-6.3093600163609613,3.6311306708681341,79.95045711426863,50.67343081144233,7.674448379086523,69.242464179422612,58.438564938906197,-6.30936658982744,72.407751808902958,6.3411761051064479,-6.3093665447405289,-6.3080278484741159,-6.3093647390988901,-6.309366589827647,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,69.179969926894216,-6.3093647388631524,-6.3093665898273992,72.407752002686223,50.67343081144233,-6.3093665447404135,69.179955059973864,-6.3093647390989096,-6.3093665898275937,-6.307312033686352,-6.3093654132716006,-6.3093665438994924,69.179953858874228,-6.3093647390989096,-6.3093665898273352,-6.307312033686352,-6.3093620081350767,-6.3093665447388707,-6.3080278484727694,-6.3093647390989096,-6.3093665898040268,79.95045687358855,-6.3093654132716193,58.438564938906111,-6.3080278484741159,-6.3093647390989096,-6.3093665898276514,-6.307312033686352,-6.3093654132716193,-6.3093665422007366,79.617131173584326,58.438490237041506,-6.3093665898276541,72.388270496111346,-6.3093654132716193,-6.3092019730863589,79.537551053833027,-6.3093647390989096,3.3436915468461157,-6.3071081197649237,-6.3093653858193308,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,-6.3093665898276488,72.407751809086278,-6.3093654132716193,-6.3093665445468874,79.617131173584653,-6.3093647390989096,-6.3093665898276541,72.408335692345275,-6.3093654132716193,-6.3093665447405014,-6.3080278484741159,-6.3093647390989096,-6.3093665898271469,-6.3073091992326029,-6.3093654132716193,58.438564858263732,-6.3080278483727632,-6.3093647390989096,-6.3093665898267819,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,3.3436915453010903,72.407768012095048,50.67343081144233,-6.3093665447405298,-6.3079741376324474,58.438564938906197,-6.3093665898276532,72.407751777073173,50.67343081144233,-6.3093665447405298,-6.3080278484741159,58.438564938513679,-6.3093665898276541,-6.3073091992326029,50.67343081144233,-6.3093665447405236,-6.3080278484741159,58.438564938906197,-6.309366589827615,72.407751816003227,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,-6.3093665898269711,79.950453161194048,50.673430811442302,-6.3093665447405227,69.179950647842603,58.438564938906197,-6.309366589827138,72.407823200885147,50.67343081144233,-6.3093665447380163,69.179953858775662,58.438564938906197,-6.3093665898276488,72.407753393873037,-6.3093654132716193,-6.3093665447394827,69.096280499821503,58.438564938906197,-6.3093665890360002,-6.307312033686352,-6.3093654132716193,-6.3093665447405263,-6.3080278484741159,58.438564938513679,50.67343081144233,72.407751808900088,50.67343081144233,-6.3093665447405263,69.180152906828283,-6.3093647390989096,-6.3093665898276541,72.407751765190653,50.67343081144233,-6.3093665410098678,-6.3080278357837587,58.438564938906197,-6.3093665898276532,-6.307312033686352,-6.3093654131456782,7.6744488006922102,69.180933159077952,-6.3093647390989096,50.67343081144233,79.950457114789316,-6.3093654132716193,-6.3093665447405174,79.544886276882863,-6.3093647390989096,3.258705726823627,-6.307312033686352,-6.3093654132470203,-6.3093665447404881,78.896163595052428,58.438564938906197,-6.3093665898276532,79.935524134664547,-6.3093654132716193,56.381734213824103,-6.3080278484727694,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,7.5966507110851422,-6.3080278484741159,58.438564938906197,-6.3093665898276541,72.40775180858229,-6.3093654132716193,-6.3093665447405298,66.49817047006448,58.438564938906197,-6.3093665898276541,-6.307312033686352,-6.3093654132194308,-6.3093665447405289,69.179954399073893,-6.3093647390989096,-6.3093665898074898,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,79.502612877115467,58.438564938906197,-6.3093665898275963,-6.307312033686352,50.67343081144233,-6.3093665447398042,65.340595964526074,58.438564938906197,-6.3093665898276541,72.407794052310379,50.67343081144233,-6.3093665447405147,69.179955578805021,-6.3093647390989096,-6.3093665896442248,67.958080233076899,50.67343081144233,-6.3093665447405165,-6.3080278484741159,58.438564938906197,3.3436915442780792,72.407751808900088,-6.3093654132716193,58.438564938906197,-6.3080278484741159,-6.3093621756147966,-6.3093665898276541,-6.3073120336863173,50.67337152903157,58.438564938906197,-6.3080278484741159,58.438564938906197,-6.3093665898276541,72.40825177012529,-6.3093654132716193,-6.3093665447405298,-6.3080278484738361,58.438564938906197,3.3436915453056768,-6.307312033686352,-6.3093654132716193,-6.3093665447405289,-6.3080278484741159,-6.3093647390988901,-6.3093665898276488,-6.307312033686352,-6.3093654132716193,-6.3093665447405041,-6.3080278484741008,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.3093665447399818,-6.3080278458348964,58.438564938906197,-6.3093665898273352,-6.3073120296361171,-6.3093654132716193,7.6744483689519241,66.49817047006448,-6.3093647390989096,-6.3093665874314384,-6.307312033686352,-6.3093654132716193,7.6744485582436335,-6.308027848474115,58.438564938906197,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,-6.3093665447248117,-6.3080027653417519,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,50.653885350516688,-6.3093665447405138,69.180130679027414,-6.3093647390989096,-6.3093665897798727,79.949898353373868,50.67343081144233,-6.3093665447359903,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093637429053828,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,-6.3093665898261051,-6.307312033686352,50.67343081144233,-6.3093665447405085,-6.3080278484741159,-6.3093647390989096,-6.3093665898148314,72.407432346401436,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,58.438564938906197,-6.3093665898276532,-6.307312033686352,50.67343081144233,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,-6.3073120334727779,50.67343081144233,-6.3093665447405289,79.617013417869558,-6.3093647390188163,-6.3093665898276532,72.407751808895526,50.67343081144233,-6.3093665447405298,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,72.407751808900912,-6.3093654132697941,-6.3093665447405227,-6.3080278483349463,-6.3093647390989096,-6.3093665898276541,72.4077496127031,-6.3093654132716193,-6.3093665447405289,69.179953859010936,-6.3093647108372606,-6.3093665898256033,-6.3073120142113046,50.664807529902362,-6.3093665447405298,-6.3080278357837587,58.438564938906197,-6.3093665897521323,72.407751811131391,-6.3093654132716193,-6.3093665447404881,-6.3080278484741159,-6.3093647390989096,-6.3093665898276532,79.94591021300927,50.67343081144233,-6.3093665433160382,69.199650216025901,58.438564938906197,-6.3093665898272757,72.407751808108969,-6.3093654132716193,-6.3093665447404756,-6.3080278484164438,-6.3093647390989096,-6.3093665893828463,72.407752005304886,-6.3093654132716193,58.438564938906197,69.179953858779342,58.438564938906197,-6.3093664825490441,-6.3073120083943843,50.67343081144233,58.438564938906197,79.617131173584639,-6.3093647390989096,-6.3093665898276532,58.929244215307691,-6.3093654132716193,-6.3093665447403957,-6.3080278484741159,58.438564938906197,-6.3093665898276532,-6.3073120336854407,-6.3093654132716193,7.6744552589054704,66.665055970551663,58.438564938906197,3.3506651403193812,72.378587852150275,50.673430811442316,-6.3093665447405298,-6.3080278357837587,-6.3093647390964813,19.465178742932824,79.950448954234759,50.67343081144233,-6.3093665447405298,69.143006132928321,-6.3093647390989096,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,7.6744482986319271,-6.3080278484741159,58.438564938906197,-6.3093665898275448,-6.307312002657099,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,58.438564938906197,-6.3093665898276337,-6.307312033686352,50.67343081144233,-6.309366544727709,-6.3080278484741159,-6.3093647390989096,-6.3093665898274107,72.407751809497896,6.3411761051064479,-6.3093665447405298,-6.3080278484741159,58.438564938906197,-6.3093665898276479,79.950457114937251,50.67343081144233,-6.3093665447373839,-6.3080278484741159,-6.3093647390989096,-6.3093665119359166,-6.3073120336863306,50.67343081144233,-6.3093665447401497,-6.3080278484741159,-6.3093647125341494,-6.3093665898276541,72.407751808900215,-6.3093654132716193,-6.309366544740528,-6.3080278484741159,58.438564938906197,3.3444712657638247,72.407751998215161,-0.18491430068187586,7.591726856624919,-6.3080278484741159,58.438564938906197,-6.3093665898269711,-6.307312033686352,-6.3093654132716193,-6.3093665447405298,-6.3080278484741159,-6.3093647390980845,50.67343081142306,72.40775185982028,50.67343081144233,-6.3093665447402953,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,72.407751813202381,-6.3093654132716193,-6.3093665447405005,-6.3080278484741159,58.438564938906197,-6.3093665898276541,-6.307312033686352,-6.3093654132716193,7.0887102210330246,-6.3080278484741159,-6.3093647390989096,-6.3093665898276541,-6.3073120336863289,50.67343081144233,-6.3093665447405298,-6.2779286232058746,-6.3093647390989096,-6.3093665898266691,72.705182881983504,50.67343081144233,-6.3093665447405298,-6.3080278484741159,58.438564938906197,-6.3093665898235045,-6.3073120336841519,-6.3093654132716193,-6.3093665447405298,69.179954098709558,-6.3093647390989096,-6.3093665898272091],"mode":"lines","type":"scatter","name":"Predicted","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"line":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<p> </p>
+<p>The model exhibits promise in capturing the variance within the data, as indicated by the substantial decrease in loss during both training and testing phases. This implies that the model has the capacity to learn from the provided data and make predictions effectively. The rapid decline in loss throughout the established epochs suggests that further iterations could enhance the model’s capabilities, indicating room for improvement with additional training epochs.</p>
+<p>Moreover, fluctuations observed in loss during both training and testing phases suggest potential instability or heightened sensitivity, likely stemming from the relatively small dataset size. With fewer data points, the model may be more vulnerable to noise or outliers, increasing the risk of overfitting. I tried to address this issue by normalizing the training and testing data, however the fluctuations persisted. This highlights the need for further exploration and refinement of the model architecture. Additional regularization techniques might be considered, such as fine-tuning hyperparameters or employing methods like Lasso regression to effectively mitigate the issue of fluctuation and improve the model’s performance.</p>
+</div>
+</div>
+<div id="strengths-limitations-1" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Strengths &amp; Limitations<a href="neural-network.html#strengths-limitations-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="strengths-2" class="section level3 hasAnchor" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Strengths<a href="neural-network.html#strengths-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Neural networks can model complex, non-linear relationships in data, capturing patterns that simpler models might miss. They also benefit from parallel processing capabilities which makes them efficient for large-scale data processing. Despite their complexity, neural networks can provide insights into the relationships between input features and target variables, aiding in the interpretation of learned patterns and relationships. When trained properly, they generalize well to new, unseen data, offering robust and reliable predictions.Additionally, neural networks are suitable for a wide range of applications, allowing them to tackle diverse problem domains.</p>
+<p>Lastly, they have a flexible architecture that allows for experimentation with different configurations, including the number of layers, neurons and activation functions. This flexibility enables the tailoring of models to specific tasks and data characteristics. Moreover, neural networks can automatically learn features from raw data, reducing the need for manual feature engineering.</p>
+</div>
+<div id="limitations-2" class="section level3 hasAnchor" number="7.4.2">
+<h3><span class="header-section-number">7.4.2</span> Limitations<a href="neural-network.html#limitations-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Despite their strengths, neural networks have several limitations that can hinder their performance and applicability. One major limitation is their requirement for large datasets. Neural networks need vast amounts of labeled data to train effectively, which can be a significant barrier in domains where data is scarce. Additionally, they are computationally intensive, requiring powerful GPUs and large memory for training, which can be a constraint in some environments.</p>
+<p>The complexity and interpretability of neural networks are also significant challenges. As model architectures become more complex, they often turn into “black boxes,” making it difficult to understand how decisions are made. This decreased interpretability can be problematic in applications where understanding the decision-making process is crucial. Furthermore, neural networks are vulnerable to small perturbations to input data which can lead to significant errors in predictions.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="generalized-additive-model.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/EliB29/AML/edit/main/06-neural-network.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/EliB29/AML/blob/main/06-neural-network.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
