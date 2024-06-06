@@ -1,0 +1,480 @@
+```{r libraries_nn, message=FALSE, warning=FALSE, include=FALSE}
+library(nycflights13)
+library(dplyr)
+library(plotly)
+```
+
+```{r en_nn, warning=FALSE, cache=TRUE, include=FALSE}
+
+# Import dataset
+date_flight <- flights 
+
+# Set random seed to ensure reproducibility.
+set.seed(123)
+
+# Randomly select 5000 row indices and use them to subset original data.
+selected_indices <- sample(1:nrow(date_flight), 5000, replace = FALSE)
+date_flight <- date_flight[selected_indices, ]
+```
+
+```{r pre-process, include=FALSE}
+# Remove rows with missing values
+data <- date_flight[, c("carrier", "arr_delay")]
+data <- na.omit(data)
+```
+
+# Neural Network
+
+By Eliana Perea Barreto
+
+## Overview
+
+Neural networks are computational models inspired by the workings of the human brain. The base-units of these networks are neurons, which are essentially units of value that exist within a system of layers. In each layer, the neurons are properly activated and managed to determine the strength and direction of the signals transmitted between them. The process of activating neurons to achieve coherent outputs is governed by weights and biases, which control the flow and transformation of input data through the network.
+
+## Algorithmic Framework
+
+The neural network consists of neurons, weights, biases, and layers. These elements collectively form its architecture. The quantity of these components depend on the model's complexity and desired precision, ranging from simple (a few layers and neurons) to highly intricate structures (thousands of neurons and numerous layers). In this specific case, a simple neural network is employed to predict flights arrival delay (arr_delay) based on carrier names (carrier). At the core of the model, there are 4 layers: the input layer (x) with 16 neurons (one for each carrier), 2 hidden layers (z_1, z_2) with 3 and 2 neurons respectively, and the output layer (y) with one neuron.
+
+<details>
+
+`<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px;`{=html} `">`{=html}Layers </b>
+
+</summary>
+
+```         
+# Initialize layers
+input_size <- 16
+hidden_size1 <- 3
+hidden_size2 <- 2
+output_size <- 1
+```
+
+</details>
+
+As carrier names are categorical variables, they must be encoded into numeric format. For that, one-hot encoding is implemented to convert the categorical carrier feature into multiple binary features. The goal is to prevent the model from assuming any ordinal relationship between the categories. Each row will have a 1 in the column corresponding to its carrier and 0 in the others.
+
+<details>
+
+`<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px;`{=html} `">`{=html}One-Hot Encode </b>
+
+</summary>
+
+```{r message=FALSE, warning=FALSE}
+# One-Hot Encode the 'carrier' variable
+one_hot <- model.matrix(~ carrier - 1, data = data)
+data <- cbind(data, one_hot)
+data$carrier <- NULL
+```
+
+</details>
+
+Information is transmitted in this model through the activation of the neurons in each layer. Now, imagine activating all neurons simultaneously would result in a chaotic mix of unrelated information. To address this, "weights"; values tare set randomly at the beginning of the process but are adjusted over time to minimize prediction errors. As Neural networks operate through matrix operations, 3 weight matrices are generated to contain the weighted values of each layer.
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Weights</b></summary>
+
+```         
+# Initialize weights
+W1 <- matrix(rnorm(input_size * hidden_size1), nrow=input_size, ncol=hidden_size1)
+W2 <- matrix(rnorm(hidden_size1 * hidden_size2), nrow=hidden_size1, ncol=hidden_size2)
+W3 <- matrix(rnorm(hidden_size2 * output_size), nrow=hidden_size2, ncol=output_size)
+```
+
+</details>
+
+As the information flows between the network's layers through the activation of neurons with weights, the biases (b) supports each layer by accounting for any inherent offsets in the data, allowing the model to better fit the training examples.
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Bias </b></summary>
+
+```         
+# Initialize biases
+b1 <- matrix(rnorm(hidden_size1), nrow=1, ncol=hidden_size1)
+b2 <- matrix(rnorm(hidden_size2), nrow=1, ncol=hidden_size2)
+b3 <- matrix(rnorm(output_size), nrow=1, ncol=output_size)
+```
+
+</details>
+
+Below is a visual representation of the architecture of this neural network. For simplicity, the input layer is depicted with only 4 neurons. However, it is important to note that this model actually starts with 16 neurons in the input layer:
+
+![](nn.png)
+
+## Training & Predicting Process
+
+Normally in a training/testing predicting process the the data is split in 2 sets. 80% of the data is allocated for model fitting while the remaining 20% is reserved for the evaluation the model's predictive accuracy.
+
+```         
+# Split the data (80% training, 20% testing) 
+indices <- sample(1:nrow(datat), 0.8 * nrow(data))
+train_data <- data_flight[indices, ]
+test_data <- data_flight[-indices, ]
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Split data 
+set.seed(42)  # Set seed again for reproducibility of the train-test split
+indices <- sample(1:nrow(data), 0.8 * nrow(data))
+train_data <- data[indices, ]
+test_data <- data[-indices, ]
+
+# Initialize layers
+input_size <- ncol(train_data) - 1
+hidden_size1 <- 3
+hidden_size2 <- 2
+output_size <- 1
+
+# Initialize weights
+W1 <- matrix(rnorm(input_size * hidden_size1, mean = 0, sd = 0.01), nrow=input_size, ncol=hidden_size1)
+W2 <- matrix(rnorm(hidden_size1 * hidden_size2, mean = 0, sd = 0.01), nrow=hidden_size1, ncol=hidden_size2)
+W3 <- matrix(rnorm(hidden_size2 * output_size, mean = 0, sd = 0.01), nrow=hidden_size2, ncol=output_size)
+
+# Initialize biases
+b1 <- matrix(0, nrow=1, ncol=hidden_size1)
+b2 <- matrix(0, nrow=1, ncol=hidden_size2)
+b3 <- matrix(0, nrow=1, ncol=output_size)
+```
+
+### Feed-forward Algorithm
+
+Referring back to the visual representation of the model's structure from the previous chapter, it's possible conceptualize the mathematical formula for the first hidden layer ($Z^{1}$) as a linear combination of neurons in the input layer ($X$) the weights' matrix ($W^{1}$) plus the bias $b^{1}$:
+
+$$
+Z^{1} = X \cdot W^{1} + b^{1}
+$$
+
+This formula is at the core of the forward pass where transmitted inputs through the network's layer result in a predicted output. As the process moves forwards, the components of that formula are replaced by values corresponding to each layer. Additionally, the output of each layer must be normalized before it is transmitted to the next layer, in order to produce a cohesive result and also to facilitate the network's ability to generalize. This normalization process is carried out by an activation function such Sigmoid or ReLU. In this specific case, Sigmoid squishification is implemented to take the weighted sum of the neurons and squish it into a range between 0 and 1. Basically, in this logistic function negative inputs end up close to zero, positive inputs get closed to one.$$
+\sigma(x) = \frac{1}{1 + e^{-x}} 
+$$
+
+When $x$ is a large negative number, $e^{-x}$ becomes very large. Example, $x = -10, e^{-(-10)} = e^{10}$. Then, this value will do the fraction $\frac{1}{1+e^{10}}$ very small, approaching zero.
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Sigmoid </b></summary>
+
+```{r}
+# Sigmoid activation function
+sigmoid <- function(x) {
+  1 / (1 + exp(-x))
+}
+```
+
+</details>
+
+With all components defined, the forward pass can be initiated. Additionally, a Cost function is set to measure the network's performance. This Cost function (also called Loss function) quantifies the error between the predicted output ($\hat{y}$) and the actual output ($y$). In this exercise, the Cost function is the Mean Squared Error (MSE).
+
+$$
+L(\hat{y}, y) = (\hat{y} - y)^2
+$$
+
+```         
+# Feed-forward    
+input <- train_data[, -ncol(train_data)]  
+Z1_train <- as.matrix(input) %*% W1 + matrix(b1, nrow=nrow(train_data), ncol=ncol(b1)) 
+A1_train <- sigmoid(Z1_train)  
+Z2_train <- A1_train %*% W2 + matrix(b2, nrow = nrow(A1_train), ncol = ncol(b2))  
+A2_train <- sigmoid(Z2_train)  
+
+# No activation function for the last layer as this is a regression problem
+Z3_train <- A2_train %*% W3 + matrix(b3, nrow = nrow(A2_train), ncol = ncol(b3))
+predicted_output_train <- Z3_train   
+
+# Calculate mean squared error for training data 
+cost_train <- mean((predicted_output_train - train_data$arr_delay)^2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+input <- train_data[, -ncol(train_data)]
+Z1_train <- as.matrix(input) %*% W1 + matrix(b1, nrow=nrow(train_data), ncol=ncol(b1))
+A1_train <- sigmoid(Z1_train)
+Z2_train <- A1_train %*% W2 + matrix(b2, nrow = nrow(A1_train), ncol = ncol(b2))
+A2_train <- sigmoid(Z2_train)
+Z3_train <- A2_train %*% W3 + matrix(b3, nrow = nrow(A2_train), ncol = ncol(b3))
+predicted_output_train <- Z3_train
+
+# Calculate mean squared error for training data
+loss_train <- mean((predicted_output_train - train_data$arr_delay)^2)
+cat("Cost previous to iterations:", loss_train, "\nAVG Cost per sample:", loss_train/nrow(train_data))
+```
+
+The high total cost indicates that the predictions are far from the actual values, which is expected since the model hasn't undergone any training iterations yet. The learning abilities of Neural Networks highly rely in an iterative process to adjust the weights. To enhance the model's performance, we need to define the number of training cycles, or epochs. Here, we set the number of epochs to 10, but this can be adjusted based on the model's prediction accuracy.
+
+```         
+epochs <- 10
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+epochs <- 99
+```
+
+Additionally all the operations presented till now constitute only one section of the learning process. The cost is high because the model hasn't received any clues to establish the correct direction to minimize the Cost, which is the ultimate goal of this process. To achieve it, the gradient of the cost function must be calculated.
+
+### Backpropagation
+
+Self-training in machine learning refers to a model's ability to iteratively analyze input data and learn to improve performance. In Backpropagation, the process is carried out backward, transmitting the error between predicted and actual outputs to previous layers. This adjusts weights and biases, minimizing the cost function.
+
+Minimization occurs when the model identifies the direction to reduce the cost, guided by the gradient of the cost function. If the slope is positive, moving in the negative gradient direction decreases the cost, and viceversa if the slope is negative.
+
+Mathematically, partial derivatives determine the gradient. The partial derivative of the cost function with respect to weights is denoted as $\frac{\partial Cost}{ \partial W^{(L)}}$. The weights are related to the values of a previous layer's weighted input $Z^{(L)}$and its activation function $a^{(L)}$
+
+1.  The derivative of $Z^{(L)}$ with respect to $W^{(L)}$ is $\frac{\partial Z^{(L)}}{\partial W^{(L)}} = a^{(L-1)}$
+
+2.  The derivative of the activation function $a^{(L)}$ with respect to $Z^{(L)}$ is $\frac{\partial a^{(L)}}{\partial Z^{(L)}} = \sigma'(Z^{(L)})$
+
+3.  The derivative of the cost with respect to the activation $a^{(L)}$ is $\frac{\partial Cost}{\partial a^{(L)}} = 2 (a^{(L)} - y)$.
+
+Therefore, the formula for Backpropagation can be defined as follows:
+
+$$
+\frac{\partial Cost}{\partial W^{(L)}} = \frac{\partial Z^{(L)}}{\partial W^{(L)}} \cdot \frac{\partial a^{(L)}}{\partial Z^{(L)}} \cdot \frac{\partial Cost }{\partial a^{(L)}}
+$$
+
+Before initiating the code for Backpropagation, the derivative of the sigmoid function is defined:
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Sigmoid Derivative </b></summary>
+
+```{r}
+# Derivative of sigmoid function
+sigmoid_derivative <- function(x) {
+  sigmoid(x) * (1 - sigmoid(x))
+}
+```
+
+</details>
+
+ 
+
+```{r message=FALSE, warning=FALSE}
+dZ3_train <- 2 * (predicted_output_train - train_data$arr_delay)
+dW3 <- t(A2_train) %*% dZ3_train # First multiplication
+dA2_train <- dZ3_train %*% t(W3) # First error propagation 
+
+dZ2_train <- dA2_train * sigmoid_derivative(Z2_train)
+dW2 <- t(A1_train) %*% dZ2_train # Second multiplication
+dA1_train <- dZ2_train %*% t(W2) # Second error propagation 
+
+dZ1_train <- dA1_train * sigmoid_derivative(Z1_train)
+dW1 <- t(input) %*% dZ1_train # Third multiplication
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Bias
+db3 <- colSums(dZ3_train)
+db2 <- colSums(dZ2_train)
+db1 <- colSums(dZ1_train)
+```
+
+The process is concluded with the update of the weights which, in gradient descent, is given by the formula:
+
+$$W^{(L)} \leftarrow W^{(L)} - \eta \frac{\partial Cost}{\partial W^{(L)}}$$
+
+where $\eta$ is the learning ratio, set to 0.01 in this specific case. The learning rate controls the size of the adjustments made to the model's weights during training. A learning rate of 0.01 indicates that the weights are updated in small increments, which helps in gradually minimizing the error without overshooting the optimal values.
+
+```         
+learning_rate = 0.01 
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+learning_rate = 0.0002 
+```
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Update </b></summary>
+
+```{r}
+# Update of weights and bias 
+W3 <- W3 - learning_rate * dW3
+b3 <- b3 - learning_rate * db3
+W2 <- W2 - learning_rate * dW2
+b2 <- b2 - learning_rate * db2
+W1 <- W1 - learning_rate * dW1
+b1 <- b1 - learning_rate * db1
+```
+
+</details>
+
+With that, the explanation of the neural network training process is concluded. The remaining task is to iterate over this process repeatedly to refine the model's performance. In our case, the model will undergo 10 iterations, as the number of epochs was initially set to that value. To view the implementation of the full code with these iterations, click on Code Preview.
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Code Preview </b></summary>
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Training loop function with adjusted learning rate
+train_model <- function(train_data, W1, W2, W3, b1, b2, b3, epochs, learning_rate) {
+  for (epoch in 1:epochs) {
+    input <- train_data[, -ncol(train_data)]
+    Z1_train <- as.matrix(input) %*% W1 + matrix(b1, nrow=nrow(train_data), ncol=ncol(b1))
+    A1_train <- sigmoid(Z1_train)
+    Z2_train <- A1_train %*% W2 + matrix(b2, nrow = nrow(A1_train), ncol = ncol(b2))
+    A2_train <- sigmoid(Z2_train)
+    Z3_train <- A2_train %*% W3 + matrix(b3, nrow = nrow(A2_train), ncol = ncol(b3))
+    predicted_output_train <- Z3_train
+
+    # Calculate mean squared error for training data
+    loss_train <- mean((predicted_output_train - train_data$arr_delay)^2)
+
+    dZ3_train <- 2 * (predicted_output_train - train_data$arr_delay)
+    dW3 <- t(A2_train) %*% dZ3_train # First multiplication
+    dA2_train <- dZ3_train %*% t(W3) # First error propagation 
+
+    dZ2_train <- dA2_train * sigmoid_derivative(Z2_train)
+    dW2 <- t(A1_train) %*% dZ2_train # Second multiplication
+    dA1_train <- dZ2_train %*% t(W2) # Second error propagation 
+
+    dZ1_train <- dA1_train * sigmoid_derivative(Z1_train)
+    dW1 <- t(input) %*% dZ1_train # Third multiplication
+
+    # Bias
+    db3 <- colSums(dZ3_train)
+    db2 <- colSums(dZ2_train)
+    db1 <- colSums(dZ1_train)
+    
+    # Gradient Clipping. to prevent gradient becoming to large
+    clip_value <- 5000
+    dW3 <- pmax(pmin(dW3, clip_value), -clip_value)
+    dW2 <- pmax(pmin(dW2, clip_value), -clip_value)
+    dW1 <- pmax(pmin(dW1, clip_value), -clip_value)
+    db3 <- pmax(pmin(db3, clip_value), -clip_value)
+    db2 <- pmax(pmin(db2, clip_value), -clip_value)
+    db1 <- pmax(pmin(db1, clip_value), -clip_value)
+
+    # Update of weights and bias 
+    W3 <- W3 - learning_rate * dW3
+    b3 <- b3 - learning_rate * db3
+    W2 <- W2 - learning_rate * dW2
+    b2 <- b2 - learning_rate * db2
+    W1 <- W1 - learning_rate * dW1
+    b1 <- b1 - learning_rate * db1
+
+    # Print loss for monitoring
+    cat("Epoch:", epoch, " - Loss (Training):", loss_train, "\n")
+  }
+  
+  list(W1 = W1, W2 = W2, W3 = W3, b1 = b1, b2 = b2, b3 = b3)
+}
+
+# Call the train_model function with the adjusted learning rate
+updated_parameters <- train_model(train_data, 
+                                  W1, W2, W3, 
+                                  b1, b2, b3, 
+                                  epochs, 
+                                  learning_rate)
+```
+
+</details>
+
+ 
+
+Initially, with 10 epochs and a learning rate of 0.01, the training process showed signs of divergence.This means that the loss was increasing exponentially instead of decreasing, which is the opposite of what should ideally happen. To address this issue, the learning rate was adjusted to 0.0002 to ensure more gradual updates to the model weights. Additionally, the weight matrices were normalized with a mean of 0 and a standard deviation of 0.01. The number of epochs was extended to 99 and gradient clipping was set to prevent the gradients from getting too large. Here are some observations based on the provided results:
+
+1.  Convergence: The loss was decreasing rapidly after the clip value was set to 5000. The last achieve value is around 897.3. This indicates that the model has converged. Further training epochs might be needed to significant improvements in the loss.
+
+2.  Stability: Generally the loss has a tendency to decrease, however there are intermittent value fluctuations.
+
+3.  Learning Rate: The chosen learning rate of 0.0002 seems to be appropriate for the training process, allowing the model to make consistent progress in reducing the loss over the epochs.
+
+4.  Effectiveness: The final loss achieved after 99 epochs, indicating that the model has learned from the data effectively.
+
+A Feed-forward architecture is created to assess the model's predictive abilities with the testing data.
+
+<details>
+
+<summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; "> Predict model </b></summary>
+
+```{r}
+predict_model <- function(test_data, W1, W2, W3, b1, b2, b3) {
+  input <- test_data[, -ncol(test_data)]
+  Z1_test <- as.matrix(input) %*% W1 + matrix(b1, nrow=nrow(test_data), ncol=ncol(b1))
+  A1_test <- sigmoid(Z1_test)
+  Z2_test <- A1_test %*% W2 + matrix(b2, nrow=nrow(A1_test), ncol=ncol(b2))
+  A2_test <- sigmoid(Z2_test)
+  Z3_test <- A2_test %*% W3 + matrix(b3, nrow=nrow(A2_test), ncol=ncol(b3))
+  predicted_output_test <- Z3_test
+  return(predicted_output_test)
+}
+```
+
+</details>
+
+```{r include=FALSE}
+# Train the model
+updated_parameters <- train_model(train_data, 
+                                  W1, W2, W3, 
+                                  b1, b2, b3, 
+                                  epochs = 173, 
+                                  learning_rate = 0.0002)
+
+# Predict on test data using the trained model parameters
+predicted_output_test <- predict_model(test_data, 
+                                       updated_parameters$W1, 
+                                       updated_parameters$W2, 
+                                       updated_parameters$W3, 
+                                       updated_parameters$b1, 
+                                       updated_parameters$b2, 
+                                       updated_parameters$b3)
+```
+
+::: {style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;"}
+```{r echo=FALSE, fig.width=80, message=FALSE, warning=FALSE}
+
+# Create a comparison data frame
+comparison <- data.frame(
+  Actual = test_data$arr_delay,
+  Predicted = predicted_output_test
+)
+
+# Calculate mean squared error for the test data
+mse_test <- mean((comparison$Predicted - comparison$Actual)^2)
+cat("Mean Squared Error on Test Data:", mse_test, "\n")
+
+# Add an index column to the comparison data frame for plotting
+comparison$Index <- 1:nrow(comparison)
+
+# Convert the comparison dataframe to long format for plotly
+comparison_long <- comparison %>%
+  tidyr::pivot_longer(cols = c("Actual", "Predicted"), names_to = "Type", values_to = "Delay")
+
+
+# Plot with Plotly
+plot_ly(data = comparison_long, x = ~Index, y = ~Delay, color = ~Type, type = 'scatter', mode = 'lines') %>%
+  layout(
+    title = "Actual vs Predicted Arrivals Delay",
+    xaxis = list(title = "Observation Index"),
+    yaxis = list(title = "Arrivals Delay"),
+    legend = list(
+      title = "Legend",
+      x = 0,
+      y = -0.2,  # Adjust the y position to move the legend closer to the graph
+      orientation = "h"  # Set orientation to horizontal
+    )
+  )
+```
+:::
+
+ 
+
+The model exhibits promise in capturing the variance within the data, as indicated by the substantial decrease in loss during both training and testing phases. This implies that the model has the capacity to learn from the provided data and make predictions effectively. The rapid decline in loss throughout the established epochs suggests that further iterations could enhance the model's capabilities, indicating room for improvement with additional training epochs.
+
+Moreover, fluctuations observed in loss during both training and testing phases suggest potential instability or heightened sensitivity, likely stemming from the relatively small dataset size. With fewer data points, the model may be more vulnerable to noise or outliers, increasing the risk of overfitting. I tried to address this issue by normalizing the training and testing data, however the fluctuations persisted. This highlights the need for further exploration and refinement of the model architecture. Additional regularization techniques might be considered, such as fine-tuning hyperparameters or employing methods like Lasso regression to effectively mitigate the issue of fluctuation and improve the model's performance.
+
+## Strengths & Limitations
+
+### Strengths
+
+Neural networks can model complex, non-linear relationships in data, capturing patterns that simpler models might miss. They also benefit from parallel processing capabilities which makes them efficient for large-scale data processing. Despite their complexity, neural networks can provide insights into the relationships between input features and target variables, aiding in the interpretation of learned patterns and relationships. When trained properly, they generalize well to new, unseen data, offering robust and reliable predictions.Additionally, neural networks are suitable for a wide range of applications, allowing them to tackle diverse problem domains.
+
+Lastly, they have a flexible architecture that allows for experimentation with different configurations, including the number of layers, neurons and activation functions. This flexibility enables the tailoring of models to specific tasks and data characteristics. Moreover, neural networks can automatically learn features from raw data, reducing the need for manual feature engineering.
+
+### Limitations
+
+Despite their strengths, neural networks have several limitations that can hinder their performance and applicability. One major limitation is their requirement for large datasets. Neural networks need vast amounts of labeled data to train effectively, which can be a significant barrier in domains where data is scarce. Additionally, they are computationally intensive, requiring powerful GPUs and large memory for training, which can be a constraint in some environments.
+
+The complexity and interpretability of neural networks are also significant challenges. As model architectures become more complex, they often turn into "black boxes," making it difficult to understand how decisions are made. This decreased interpretability can be problematic in applications where understanding the decision-making process is crucial. Furthermore, neural networks are vulnerable to small perturbations to input data which can lead to significant errors in predictions.
