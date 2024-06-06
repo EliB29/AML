@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Simple Linear Model | Applied Machine Learning</title>
+  <meta name="description" content="Chapter 2 Simple Linear Model | Applied Machine Learning" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Simple Linear Model | Applied Machine Learning" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Simple Linear Model | Applied Machine Learning" />
+  
+  
+  
+
+<meta name="author" content="Sheptim Veseli &amp; Eliana Perea Barreto" />
+
+
+<meta name="date" content="2024-06-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="poisson-linear-regression.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Applied ML</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#dataset"><i class="fa fa-check"></i><b>1.1</b> Dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#the-models"><i class="fa fa-check"></i><b>1.2</b> The models</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#use-of-generative-ai"><i class="fa fa-check"></i><b>1.3</b> Use of Generative AI</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="simple-linear-model.html"><a href="simple-linear-model.html"><i class="fa fa-check"></i><b>2</b> Simple Linear Model</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#data-preparation"><i class="fa fa-check"></i><b>2.2</b> Data Preparation</a></li>
+<li class="chapter" data-level="2.3" data-path="simple-linear-model.html"><a href="simple-linear-model.html#descriptive-statistics"><i class="fa fa-check"></i><b>2.3</b> Descriptive Statistics</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#arrival-delay-statistics"><i class="fa fa-check"></i><b>2.3.1</b> Arrival Delay Statistics</a></li>
+<li class="chapter" data-level="2.3.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#carrier-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Carrier Statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="simple-linear-model.html"><a href="simple-linear-model.html#linear-regression-analysis"><i class="fa fa-check"></i><b>2.4</b> Linear Regression Analysis</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#model-summary"><i class="fa fa-check"></i><b>2.4.1</b> Model Summary</a></li>
+<li class="chapter" data-level="2.4.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#significant-carriers"><i class="fa fa-check"></i><b>2.4.2</b> Significant Carriers</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="simple-linear-model.html"><a href="simple-linear-model.html#diagnostic-plots"><i class="fa fa-check"></i><b>2.5</b> Diagnostic Plots</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#interpretation-and-conclusion"><i class="fa fa-check"></i><b>2.5.1</b> Interpretation and Conclusion</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html"><i class="fa fa-check"></i><b>3</b> Poisson Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#overview"><i class="fa fa-check"></i><b>3.1</b> Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#algorithmic-framework"><i class="fa fa-check"></i><b>3.2</b> Algorithmic Framework</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#data-nature"><i class="fa fa-check"></i><b>3.2.1</b> Data Nature</a></li>
+<li class="chapter" data-level="3.2.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#regression-equation"><i class="fa fa-check"></i><b>3.2.2</b> Regression equation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#training-predicting-process"><i class="fa fa-check"></i><b>3.3</b> Training &amp; Predicting Process</a></li>
+<li class="chapter" data-level="3.4" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#strengths-limitations"><i class="fa fa-check"></i><b>3.4</b> Strengths &amp; Limitations</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#strengths"><i class="fa fa-check"></i><b>3.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="3.4.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#limitations"><i class="fa fa-check"></i><b>3.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html"><i class="fa fa-check"></i><b>4</b> Binomial Linear Regression</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#overview-1"><i class="fa fa-check"></i><b>4.1</b> Overview</a></li>
+<li class="chapter" data-level="4.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#algorithmic-framework-1"><i class="fa fa-check"></i><b>4.2</b> Algorithmic Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#data-nature-1"><i class="fa fa-check"></i><b>4.2.1</b> Data Nature</a></li>
+<li class="chapter" data-level="4.2.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#regression-equation-1"><i class="fa fa-check"></i><b>4.2.2</b> Regression Equation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#training-predicting-process-1"><i class="fa fa-check"></i><b>4.3</b> Training &amp; Predicting Process</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#model-evaluation"><i class="fa fa-check"></i><b>4.3.1</b> Model Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#strengths-and-limitations"><i class="fa fa-check"></i><b>4.4</b> Strengths and Limitations</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#strengths-1"><i class="fa fa-check"></i><b>4.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="4.4.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#limitations-1"><i class="fa fa-check"></i><b>4.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="support-vector-machine.html"><a href="support-vector-machine.html"><i class="fa fa-check"></i><b>5</b> Support Vector Machine</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#introduction-2"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="support-vector-machine.html"><a href="support-vector-machine.html#data-preparation-1"><i class="fa fa-check"></i><b>5.2</b> Data Preparation</a></li>
+<li class="chapter" data-level="5.3" data-path="support-vector-machine.html"><a href="support-vector-machine.html#training-and-test-split"><i class="fa fa-check"></i><b>5.3</b> Training and Test Split</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#svm-model-training"><i class="fa fa-check"></i><b>5.3.1</b> SVM Model Training</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="support-vector-machine.html"><a href="support-vector-machine.html#model-evaluation-1"><i class="fa fa-check"></i><b>5.4</b> Model Evaluation</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#result-interpretation"><i class="fa fa-check"></i><b>5.4.1</b> Result Interpretation</a></li>
+<li class="chapter" data-level="5.4.2" data-path="support-vector-machine.html"><a href="support-vector-machine.html#discussion"><i class="fa fa-check"></i><b>5.4.2</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="support-vector-machine.html"><a href="support-vector-machine.html#conclusion"><i class="fa fa-check"></i><b>5.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html"><i class="fa fa-check"></i><b>6</b> Generalized Additive Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#introduction-3"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#data-preparation-2"><i class="fa fa-check"></i><b>6.2</b> Data Preparation</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#log-transformation"><i class="fa fa-check"></i><b>6.2.1</b> Log Transformation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#data-splitting-model-fitting"><i class="fa fa-check"></i><b>6.3</b> Data Splitting &amp; Model Fitting</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#model-summary-1"><i class="fa fa-check"></i><b>6.3.1</b> Model Summary</a></li>
+<li class="chapter" data-level="6.3.2" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#model-evaluation-2"><i class="fa fa-check"></i><b>6.3.2</b> Model Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#conclusion-1"><i class="fa fa-check"></i><b>6.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i><b>7</b> Neural Network</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="neural-network.html"><a href="neural-network.html#overview-2"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="neural-network.html"><a href="neural-network.html#algorithmic-framework-2"><i class="fa fa-check"></i><b>7.2</b> Algorithmic Framework</a></li>
+<li class="chapter" data-level="7.3" data-path="neural-network.html"><a href="neural-network.html#training-predicting-process-2"><i class="fa fa-check"></i><b>7.3</b> Training &amp; Predicting Process</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="neural-network.html"><a href="neural-network.html#feed-forward-algorithm"><i class="fa fa-check"></i><b>7.3.1</b> Feed-forward Algorithm</a></li>
+<li class="chapter" data-level="7.3.2" data-path="neural-network.html"><a href="neural-network.html#backpropagation"><i class="fa fa-check"></i><b>7.3.2</b> Backpropagation</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="neural-network.html"><a href="neural-network.html#strengths-limitations-1"><i class="fa fa-check"></i><b>7.4</b> Strengths &amp; Limitations</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="neural-network.html"><a href="neural-network.html#strengths-2"><i class="fa fa-check"></i><b>7.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="7.4.2" data-path="neural-network.html"><a href="neural-network.html#limitations-2"><i class="fa fa-check"></i><b>7.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/EliB29/AML" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Applied Machine Learning</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="simple-linear-model" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Simple Linear Model<a href="simple-linear-model.html#simple-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>By Sheptim Veseli</p>
+<div id="introduction-1" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Introduction<a href="simple-linear-model.html#introduction-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This analysis investigates the impact of airline carriers on flight arrival delays using the nycflights13 dataset. The dataset contains flight details for all aircraft departing from New York City airports throughout 2013. The objective is to explore the predictive potential of a simple linear regression model, where the arrival delay (arr_delay) is the dependent variable and the carrier (airline name) is the primary independent variable.</p>
+</div>
+<div id="data-preparation" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Data Preparation<a href="simple-linear-model.html#data-preparation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The original dataset comprises 336,776 entries across 19 variables. To meet the project’s criteria of working with a dataset within a range of 10^3 to 10^5 rows, a random sample of 5000 entries was selected. Additionally, rows with missing values in key variables (dep_time, arr_time, arr_delay, tailnum, air_time) were removed, resulting in a cleaned dataset of 2052 rows.</p>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Code Preview </b></p>
+</summary>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="simple-linear-model.html#cb3-1" tabindex="-1"></a><span class="co"># Set random seed to ensure reproducibility</span></span>
+<span id="cb3-2"><a href="simple-linear-model.html#cb3-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-3"><a href="simple-linear-model.html#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="simple-linear-model.html#cb3-4" tabindex="-1"></a><span class="co"># Randomly select 5000 row indices and use them to subset original data</span></span>
+<span id="cb3-5"><a href="simple-linear-model.html#cb3-5" tabindex="-1"></a>selected_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(flights), <span class="dv">5000</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-6"><a href="simple-linear-model.html#cb3-6" tabindex="-1"></a>flights_subset <span class="ot">&lt;-</span> flights[selected_indices, ]</span>
+<span id="cb3-7"><a href="simple-linear-model.html#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="simple-linear-model.html#cb3-8" tabindex="-1"></a><span class="co"># Remove rows with missing values in key variables</span></span>
+<span id="cb3-9"><a href="simple-linear-model.html#cb3-9" tabindex="-1"></a>flights_subset <span class="ot">&lt;-</span> flights_subset[<span class="fu">complete.cases</span>(flights_subset<span class="sc">$</span>dep_time, flights_subset<span class="sc">$</span>arr_time, flights_subset<span class="sc">$</span>arr_delay, flights_subset<span class="sc">$</span>tailnum, flights_subset<span class="sc">$</span>air_time), ]</span>
+<span id="cb3-10"><a href="simple-linear-model.html#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="simple-linear-model.html#cb3-11" tabindex="-1"></a><span class="co"># Remove negative values from arrival delay time (arr_delay)</span></span>
+<span id="cb3-12"><a href="simple-linear-model.html#cb3-12" tabindex="-1"></a>flights_subset <span class="ot">&lt;-</span> flights_subset[flights_subset<span class="sc">$</span>arr_delay <span class="sc">&gt;=</span> <span class="dv">0</span>, ]</span>
+<span id="cb3-13"><a href="simple-linear-model.html#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="simple-linear-model.html#cb3-14" tabindex="-1"></a><span class="co"># Apply logarithmic transformation to arrival delay time (arr_delay)</span></span>
+<span id="cb3-15"><a href="simple-linear-model.html#cb3-15" tabindex="-1"></a>flights_subset<span class="sc">$</span>log_arr_delay <span class="ot">&lt;-</span> <span class="fu">log</span>(flights_subset<span class="sc">$</span>arr_delay <span class="sc">+</span> <span class="dv">1</span>)</span></code></pre></div>
+</details>
+</div>
+<div id="descriptive-statistics" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Descriptive Statistics<a href="simple-linear-model.html#descriptive-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Descriptive statistics provide a summary of the data’s main characteristics, offering insight into the central tendency, dispersion, and distribution of the dataset. For this analysis, we focus on two key aspects: arrival delays and the distribution of flights among different carriers.</p>
+<div id="arrival-delay-statistics" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Arrival Delay Statistics<a href="simple-linear-model.html#arrival-delay-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The arrival delay data reveals insightful characteristics of flight punctuality.</p>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    7.00   19.00   37.06   46.00  681.00</code></pre>
+<p>The minimum recorded delay is 0 minutes, indicating that some flights arrived precisely on schedule or even earlier. The first quartile (25th percentile) value is 7 minutes, suggesting that 25% of the flights experienced delays of 7 minutes or less. This relatively low quartile value reflects a significant proportion of flights with minimal delays. The median delay, which represents the 50th percentile, is 19 minutes. This median value implies that half of the flights were delayed by 19 minutes or less, indicating a moderate level of punctuality. However, the mean delay is approximately 37.06 minutes, which is notably higher than the median. This discrepancy between the mean and median suggests the presence of extreme delays that skew the average upward. The third quartile (75th percentile) value is 46 minutes, showing that 75% of the flights were delayed by up to 46 minutes. The maximum recorded delay in the dataset is an alarming 681 minutes, illustrating the significant variability and the potential for exceptionally long delays.</p>
+</div>
+<div id="carrier-statistics" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Carrier Statistics<a href="simple-linear-model.html#carrier-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Among the carriers, the dataset reveals that B6, EV, and UA are the most frequent, with 344, 376, and 332 flights, respectively. These carriers represent the bulk of the dataset, suggesting they have a substantial operational presence in the New York City area. The presence of a smaller number of flights for carriers like AS and OO, with only 2 and 1 flights respectively, highlights a skewed distribution towards certain airlines. This skewness might reflect the market dominance or higher frequency of operations by these carriers in the specified region and time period.</p>
+<pre><code>## 
+##  9E  AA  AS  B6  DL  EV  F9  FL  MQ  OO  UA  US  VX  WN  YV 
+## 102 183   2 344 262 376   5  29 188   1 332 115  30  82   1</code></pre>
+</div>
+</div>
+<div id="linear-regression-analysis" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Linear Regression Analysis<a href="simple-linear-model.html#linear-regression-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To elucidate the relationship between airline carriers and flight arrival delays, a simple linear regression model was constructed using the logarithm of the arrival delay (log_arr_delay) as the dependent variable and the carrier as the independent variable. The choice to logarithmize the arrival delay variable was motivated by its right-skewed distribution. The logarithmic transformation normalizes this distribution, enhancing the linearity assumption and the overall interpretability of the regression results. The regression model was formulated as follows:</p>
+<p><span class="math display">\[
+log (\text{arr_delay}) = β_0 + β_1 ⋅ carrierAA + β_2 ⋅ carrierAS + β_3 ⋅ carrierB6 +⋯ + β_14 ⋅ carrier YV
+\]</span></p>
+<p>where 𝛽0 is the intercept, and 𝛽𝑖 are the coefficients for each carrier compared to the baseline carrier.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="simple-linear-model.html#cb6-1" tabindex="-1"></a>lm_model_log <span class="ot">&lt;-</span> <span class="fu">lm</span>(log_arr_delay <span class="sc">~</span> carrier, <span class="at">data =</span> flights_subset)</span></code></pre></div>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Summary Preview </b></p>
+</summary>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="simple-linear-model.html#cb7-1" tabindex="-1"></a><span class="fu">summary</span>(lm_model_log)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = log_arr_delay ~ carrier, data = flights_subset)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.2948 -0.8174  0.0375  0.9026  3.7391 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   3.2948     0.1263  26.093  &lt; 2e-16 ***
+## carrierAA    -0.5597     0.1576  -3.552 0.000391 ***
+## carrierAS    -1.3003     0.9106  -1.428 0.153443    
+## carrierB6    -0.3235     0.1438  -2.250 0.024573 *  
+## carrierDL    -0.5089     0.1488  -3.419 0.000641 ***
+## carrierEV    -0.2364     0.1424  -1.661 0.096950 .  
+## carrierF9    -1.2100     0.5841  -2.071 0.038449 *  
+## carrierFL    -0.5775     0.2684  -2.152 0.031537 *  
+## carrierMQ    -0.2121     0.1568  -1.353 0.176348    
+## carrierOO     1.7678     1.2815   1.379 0.167911    
+## carrierUA    -0.4550     0.1444  -3.152 0.001647 ** 
+## carrierUS    -0.6056     0.1735  -3.491 0.000491 ***
+## carrierVX    -0.5733     0.2649  -2.165 0.030538 *  
+## carrierWN    -0.4198     0.1892  -2.219 0.026581 *  
+## carrierYV    -0.8099     1.2815  -0.632 0.527480    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.275 on 2037 degrees of freedom
+## Multiple R-squared:  0.01754,    Adjusted R-squared:  0.01079 
+## F-statistic: 2.598 on 14 and 2037 DF,  p-value: 0.0009886</code></pre>
+</details>
+<div id="model-summary" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> Model Summary<a href="simple-linear-model.html#model-summary" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>Residuals: These ranged from -3.2948 to 3.7391, indicating the spread of the differences between observed and predicted log-transformed arrival delays.</p></li>
+<li><p>R-squared: The value was 0.01754, signifying that approximately 1.75% of the variability in the log-transformed arrival delays could be explained by the airline carrier variable alone.</p></li>
+<li><p>Adjusted R-squared: The value was slightly lower at 0.01079, adjusting for the number of predictors. F-statistic: The value was 2.598 with a p-value of 0.0009886, indicating that the overall model was statistically significant.</p></li>
+</ul>
+</div>
+<div id="significant-carriers" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> Significant Carriers<a href="simple-linear-model.html#significant-carriers" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The regression coefficients for the carriers were examined to determine their impact on arrival delays. The coefficients and their interpretations are as follows:</p>
+<ul>
+<li><p>American Airlines (AA): 𝛽^AA=−0.5597, 𝑝&lt;0.001 β^​AA=−0.5597,p&lt;0.001 This indicates that, on average, American Airlines flights had lower log-transformed arrival delays compared to the baseline carrier.</p></li>
+<li><p>JetBlue (B6): 𝛽^B6=−0.3235, 𝑝&lt;0.05 β^​B6=−0.3235,p&lt;0.05 Suggests a reduction in arrival delays for JetBlue flights.</p></li>
+<li><p>Delta Airlines (DL): 𝛽^DL=−0.5089,  𝑝&lt;0.001 β^DL=−0.5089,p&lt;0.001 Indicates a significant reduction in delays for Delta Airlines.</p></li>
+</ul>
+<p>These significant negative coefficients denote that these carriers generally have shorter arrival delays compared to the baseline carrier. The significance of these coefficients was determined by their p-values being less than 0.05, indicating strong evidence against the null hypothesis of no effect.</p>
+<p>The y-intercept (𝛽0) represents the expected value of the log-transformed arrival delay when all other predictors are zero. For the carriers with significant negative coefficients, the interpretation is that these airlines are associated with shorter arrival delays compared to the baseline carrier. The low R-squared value (0.01754) suggests that the carrier variable alone does not explain much of the variability in arrival delays. This indicates that other factors, not included in this simple model, likely play a significant role in influencing arrival delays. These factors could include weather conditions, airport congestion, and specific aircraft issues.</p>
+</div>
+</div>
+<div id="diagnostic-plots" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Diagnostic Plots<a href="simple-linear-model.html#diagnostic-plots" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="Simple%20Linear%20Regression.png" width="581" /></p>
+<div id="interpretation-and-conclusion" class="section level3 hasAnchor" number="2.5.1">
+<h3><span class="header-section-number">2.5.1</span> Interpretation and Conclusion<a href="simple-linear-model.html#interpretation-and-conclusion" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The linear regression model indicates that certain carriers significantly impact flight arrival delays. Specifically, carriers such as American Airlines, Delta Airlines, and United Airlines, among others, are associated with shorter arrival delays compared to the baseline carrier. However, the low R-squared value highlights that much of the variability in arrival delays remains unexplained by the carrier variable alone, suggesting the presence of other influential factors not included in this model. The diagnostic plots generally confirm the assumptions of the regression model but also point to the presence of potential outliers and influential points that may affect the model’s accuracy.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="poisson-linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/EliB29/AML/edit/main/01-simple-linear.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/EliB29/AML/blob/main/01-simple-linear.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

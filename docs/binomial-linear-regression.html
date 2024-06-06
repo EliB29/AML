@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Binomial Linear Regression | Applied Machine Learning</title>
+  <meta name="description" content="Chapter 4 Binomial Linear Regression | Applied Machine Learning" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Binomial Linear Regression | Applied Machine Learning" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Binomial Linear Regression | Applied Machine Learning" />
+  
+  
+  
+
+<meta name="author" content="Sheptim Veseli &amp; Eliana Perea Barreto" />
+
+
+<meta name="date" content="2024-06-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="poisson-linear-regression.html"/>
+<link rel="next" href="support-vector-machine.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Applied ML</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#dataset"><i class="fa fa-check"></i><b>1.1</b> Dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#the-models"><i class="fa fa-check"></i><b>1.2</b> The models</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#use-of-generative-ai"><i class="fa fa-check"></i><b>1.3</b> Use of Generative AI</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="simple-linear-model.html"><a href="simple-linear-model.html"><i class="fa fa-check"></i><b>2</b> Simple Linear Model</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#data-preparation"><i class="fa fa-check"></i><b>2.2</b> Data Preparation</a></li>
+<li class="chapter" data-level="2.3" data-path="simple-linear-model.html"><a href="simple-linear-model.html#descriptive-statistics"><i class="fa fa-check"></i><b>2.3</b> Descriptive Statistics</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#arrival-delay-statistics"><i class="fa fa-check"></i><b>2.3.1</b> Arrival Delay Statistics</a></li>
+<li class="chapter" data-level="2.3.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#carrier-statistics"><i class="fa fa-check"></i><b>2.3.2</b> Carrier Statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="simple-linear-model.html"><a href="simple-linear-model.html#linear-regression-analysis"><i class="fa fa-check"></i><b>2.4</b> Linear Regression Analysis</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#model-summary"><i class="fa fa-check"></i><b>2.4.1</b> Model Summary</a></li>
+<li class="chapter" data-level="2.4.2" data-path="simple-linear-model.html"><a href="simple-linear-model.html#significant-carriers"><i class="fa fa-check"></i><b>2.4.2</b> Significant Carriers</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="simple-linear-model.html"><a href="simple-linear-model.html#diagnostic-plots"><i class="fa fa-check"></i><b>2.5</b> Diagnostic Plots</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="simple-linear-model.html"><a href="simple-linear-model.html#interpretation-and-conclusion"><i class="fa fa-check"></i><b>2.5.1</b> Interpretation and Conclusion</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html"><i class="fa fa-check"></i><b>3</b> Poisson Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#overview"><i class="fa fa-check"></i><b>3.1</b> Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#algorithmic-framework"><i class="fa fa-check"></i><b>3.2</b> Algorithmic Framework</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#data-nature"><i class="fa fa-check"></i><b>3.2.1</b> Data Nature</a></li>
+<li class="chapter" data-level="3.2.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#regression-equation"><i class="fa fa-check"></i><b>3.2.2</b> Regression equation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#training-predicting-process"><i class="fa fa-check"></i><b>3.3</b> Training &amp; Predicting Process</a></li>
+<li class="chapter" data-level="3.4" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#strengths-limitations"><i class="fa fa-check"></i><b>3.4</b> Strengths &amp; Limitations</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#strengths"><i class="fa fa-check"></i><b>3.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="3.4.2" data-path="poisson-linear-regression.html"><a href="poisson-linear-regression.html#limitations"><i class="fa fa-check"></i><b>3.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html"><i class="fa fa-check"></i><b>4</b> Binomial Linear Regression</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#overview-1"><i class="fa fa-check"></i><b>4.1</b> Overview</a></li>
+<li class="chapter" data-level="4.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#algorithmic-framework-1"><i class="fa fa-check"></i><b>4.2</b> Algorithmic Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#data-nature-1"><i class="fa fa-check"></i><b>4.2.1</b> Data Nature</a></li>
+<li class="chapter" data-level="4.2.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#regression-equation-1"><i class="fa fa-check"></i><b>4.2.2</b> Regression Equation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#training-predicting-process-1"><i class="fa fa-check"></i><b>4.3</b> Training &amp; Predicting Process</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#model-evaluation"><i class="fa fa-check"></i><b>4.3.1</b> Model Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#strengths-and-limitations"><i class="fa fa-check"></i><b>4.4</b> Strengths and Limitations</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#strengths-1"><i class="fa fa-check"></i><b>4.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="4.4.2" data-path="binomial-linear-regression.html"><a href="binomial-linear-regression.html#limitations-1"><i class="fa fa-check"></i><b>4.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="support-vector-machine.html"><a href="support-vector-machine.html"><i class="fa fa-check"></i><b>5</b> Support Vector Machine</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#introduction-2"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="support-vector-machine.html"><a href="support-vector-machine.html#data-preparation-1"><i class="fa fa-check"></i><b>5.2</b> Data Preparation</a></li>
+<li class="chapter" data-level="5.3" data-path="support-vector-machine.html"><a href="support-vector-machine.html#training-and-test-split"><i class="fa fa-check"></i><b>5.3</b> Training and Test Split</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#svm-model-training"><i class="fa fa-check"></i><b>5.3.1</b> SVM Model Training</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="support-vector-machine.html"><a href="support-vector-machine.html#model-evaluation-1"><i class="fa fa-check"></i><b>5.4</b> Model Evaluation</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="support-vector-machine.html"><a href="support-vector-machine.html#result-interpretation"><i class="fa fa-check"></i><b>5.4.1</b> Result Interpretation</a></li>
+<li class="chapter" data-level="5.4.2" data-path="support-vector-machine.html"><a href="support-vector-machine.html#discussion"><i class="fa fa-check"></i><b>5.4.2</b> Discussion</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="support-vector-machine.html"><a href="support-vector-machine.html#conclusion"><i class="fa fa-check"></i><b>5.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html"><i class="fa fa-check"></i><b>6</b> Generalized Additive Model</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#introduction-3"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
+<li class="chapter" data-level="6.2" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#data-preparation-2"><i class="fa fa-check"></i><b>6.2</b> Data Preparation</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#log-transformation"><i class="fa fa-check"></i><b>6.2.1</b> Log Transformation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#data-splitting-model-fitting"><i class="fa fa-check"></i><b>6.3</b> Data Splitting &amp; Model Fitting</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#model-summary-1"><i class="fa fa-check"></i><b>6.3.1</b> Model Summary</a></li>
+<li class="chapter" data-level="6.3.2" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#model-evaluation-2"><i class="fa fa-check"></i><b>6.3.2</b> Model Evaluation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-additive-model.html"><a href="generalized-additive-model.html#conclusion-1"><i class="fa fa-check"></i><b>6.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="neural-network.html"><a href="neural-network.html"><i class="fa fa-check"></i><b>7</b> Neural Network</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="neural-network.html"><a href="neural-network.html#overview-2"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="neural-network.html"><a href="neural-network.html#algorithmic-framework-2"><i class="fa fa-check"></i><b>7.2</b> Algorithmic Framework</a></li>
+<li class="chapter" data-level="7.3" data-path="neural-network.html"><a href="neural-network.html#training-predicting-process-2"><i class="fa fa-check"></i><b>7.3</b> Training &amp; Predicting Process</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="neural-network.html"><a href="neural-network.html#feed-forward-algorithm"><i class="fa fa-check"></i><b>7.3.1</b> Feed-forward Algorithm</a></li>
+<li class="chapter" data-level="7.3.2" data-path="neural-network.html"><a href="neural-network.html#backpropagation"><i class="fa fa-check"></i><b>7.3.2</b> Backpropagation</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="neural-network.html"><a href="neural-network.html#strengths-limitations-1"><i class="fa fa-check"></i><b>7.4</b> Strengths &amp; Limitations</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="neural-network.html"><a href="neural-network.html#strengths-2"><i class="fa fa-check"></i><b>7.4.1</b> Strengths</a></li>
+<li class="chapter" data-level="7.4.2" data-path="neural-network.html"><a href="neural-network.html#limitations-2"><i class="fa fa-check"></i><b>7.4.2</b> Limitations</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/EliB29/AML" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Applied Machine Learning</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="binomial-linear-regression" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Binomial Linear Regression<a href="binomial-linear-regression.html#binomial-linear-regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>By Eliana Perea Barreto</p>
+<div id="overview-1" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Overview<a href="binomial-linear-regression.html#overview-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Binomial regression is a type of generalized linear model used for a binary dependent variable (y), meaning a variable with two possible outcomes, often coded as 0 or 1. This model extends linear regression by applying a logistic function to estimate the probabilities of binary outcomes based on one or more predictor variables.</p>
+</div>
+<div id="algorithmic-framework-1" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Algorithmic Framework<a href="binomial-linear-regression.html#algorithmic-framework-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="data-nature-1" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Data Nature<a href="binomial-linear-regression.html#data-nature-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Binomial regression, commonly known as logistic regression, is typically employed when the response variable assumes a binary form. However, as outlined in the introduction of this investigation, the goal here is to assess the relation between flight arrival delays and carrier names. In the revised framework, the response variable, <code>arr_delay</code> has continuous values. Thus it becomes imperative to appropriately transform its values into a binary format.</p>
+<p>In this new set up , a new variable <code>arr_delay_binary</code> is adopted as the response variable. This variable takes on the continuous values of <code>arr_delay</code> and assign 0 to delays lower or equal to 0 and 1 to delays greater than 1:</p>
+<p><span class="math display">\[
+\text{arr_delay_binary} \leq 0 \quad \text{ as &quot;on-time&quot; } = (0) \quad | \quad  \text{arr_delay_binary &gt; 0 } \quad \text{as delay} = (1)
+\]</span></p>
+<p>Here’s a summary of the distribution of <code>arr_delay_binary</code> :</p>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Code Preview </b></p>
+</summary>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="binomial-linear-regression.html#cb22-1" tabindex="-1"></a><span class="co"># Define lower and upper bounds for outliers</span></span>
+<span id="cb22-2"><a href="binomial-linear-regression.html#cb22-2" tabindex="-1"></a>Q1 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(datos_flight<span class="sc">$</span>arr_delay, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-3"><a href="binomial-linear-regression.html#cb22-3" tabindex="-1"></a>Q3 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(datos_flight<span class="sc">$</span>arr_delay, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-4"><a href="binomial-linear-regression.html#cb22-4" tabindex="-1"></a>lower_bound <span class="ot">&lt;-</span> Q1 <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> (Q3 <span class="sc">-</span> Q1)</span>
+<span id="cb22-5"><a href="binomial-linear-regression.html#cb22-5" tabindex="-1"></a>upper_bound <span class="ot">&lt;-</span> Q3 <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> (Q3 <span class="sc">-</span> Q1)</span>
+<span id="cb22-6"><a href="binomial-linear-regression.html#cb22-6" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="binomial-linear-regression.html#cb22-7" tabindex="-1"></a><span class="co"># Replace outliers and NA values by the mean of the column</span></span>
+<span id="cb22-8"><a href="binomial-linear-regression.html#cb22-8" tabindex="-1"></a>mean_arr_delay <span class="ot">&lt;-</span> <span class="fu">mean</span>(datos_flight<span class="sc">$</span>arr_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-9"><a href="binomial-linear-regression.html#cb22-9" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="binomial-linear-regression.html#cb22-10" tabindex="-1"></a>datos_flight <span class="ot">&lt;-</span> datos_flight <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="binomial-linear-regression.html#cb22-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">arr_delay =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(arr_delay) <span class="sc">|</span> arr_delay <span class="sc">&lt;</span> lower_bound <span class="sc">|</span> arr_delay <span class="sc">&gt;</span> upper_bound, mean_arr_delay, arr_delay))</span>
+<span id="cb22-12"><a href="binomial-linear-regression.html#cb22-12" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="binomial-linear-regression.html#cb22-13" tabindex="-1"></a><span class="co"># Second mutate: Convert dep_delay to a binary variable</span></span>
+<span id="cb22-14"><a href="binomial-linear-regression.html#cb22-14" tabindex="-1"></a>datos_flight <span class="ot">&lt;-</span> datos_flight <span class="sc">%&gt;%</span></span>
+<span id="cb22-15"><a href="binomial-linear-regression.html#cb22-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">arr_delay_binary =</span> <span class="fu">ifelse</span>(arr_delay <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span></code></pre></div>
+</details>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   0.000   0.000   0.422   1.000   1.000</code></pre>
+<p>As delineated in the summary of the variable, the conversion of continuous data into a Boolean format (0 or 1) was accomplished seamlessly. This transformation is underscored by a mean value of 0, a minimum value of 0, and a maximum value of 1, with the absence of any NA values. Consequently, we can proceed to investigate how this response variable is distributed across all carriers, with a particular focus on discerning the proportion of delayed (1) versus non-delayed (0) instances.</p>
+<p><img src="Applied-Machine-Learning_files/figure-html/unnamed-chunk-19-1.png" width="960" /></p>
+<p>Notice that the carrier “OO” has a proportion of 100% delays. The reason behind this is that this carrier has only one entry in the dataset, which corresponds to 1. Such a circumstance prompts considerations regarding the distribution of data across carriers, especially in cases where data imbalances may influence the analysis. This concern is amplified if carriers with limited data entries, like “OO”, are considered next to carriers boasting larger datasets.</p>
+<pre><code>## 
+##  9E  AA  AS  B6  DL  EV  F9  FL  HA  MQ  OO  UA  US  VX  WN  YV 
+## 276 504   3 818 747 787   8  52   7 401   1 844 299  71 176   6</code></pre>
+<pre><code>## Median of the counts: 226</code></pre>
+<p>Upon examination of the counts and median of the distribution, it becomes evident that several carriers fall significantly below the median. Carriers AS, F9, HA, OO, VX, and YV each have fewer than 50 samples, a quantity that may be deemed limited, as it is approximately five times lower than the median. This data imbalance could lead to the Generalized Linear Model (GLM) giving excessive importance to the minority class, possibly undermining prediction accuracy or inferences. To tackle the problem of low statistical power for airlines with minimal samples, they’ll be grouped under the category “Other,” . This way we can improve the model’s statistical power without sacrificing meaningful comparisons.</p>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Code Preview </b></p>
+</summary>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="binomial-linear-regression.html#cb26-1" tabindex="-1"></a><span class="co"># Convert the table to a dataframe for easier manipulation</span></span>
+<span id="cb26-2"><a href="binomial-linear-regression.html#cb26-2" tabindex="-1"></a>carrier_counts_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(carrier_counts)</span>
+<span id="cb26-3"><a href="binomial-linear-regression.html#cb26-3" tabindex="-1"></a><span class="fu">names</span>(carrier_counts_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;carrier&quot;</span>, <span class="st">&quot;entries_count&quot;</span>)</span>
+<span id="cb26-4"><a href="binomial-linear-regression.html#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="binomial-linear-regression.html#cb26-5" tabindex="-1"></a><span class="co"># Identify airlines with fewer than 50 entries</span></span>
+<span id="cb26-6"><a href="binomial-linear-regression.html#cb26-6" tabindex="-1"></a>rare_airlines <span class="ot">&lt;-</span> carrier_counts_df<span class="sc">$</span>carrier[carrier_counts_df<span class="sc">$</span>entries_count <span class="sc">&lt;</span> <span class="dv">50</span>]</span>
+<span id="cb26-7"><a href="binomial-linear-regression.html#cb26-7" tabindex="-1"></a>datos_flight<span class="sc">$</span>carrier_grouped <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(datos_flight<span class="sc">$</span>carrier <span class="sc">%in%</span> rare_airlines, <span class="st">&quot;Other&quot;</span>, datos_flight<span class="sc">$</span>carrier)</span>
+<span id="cb26-8"><a href="binomial-linear-regression.html#cb26-8" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="binomial-linear-regression.html#cb26-9" tabindex="-1"></a><span class="co"># Create New dataset</span></span>
+<span id="cb26-10"><a href="binomial-linear-regression.html#cb26-10" tabindex="-1"></a>columns_to_keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;carrier_grouped&quot;</span>,<span class="st">&quot;arr_delay&quot;</span>, <span class="st">&quot;arr_delay_binary&quot;</span>)</span>
+<span id="cb26-11"><a href="binomial-linear-regression.html#cb26-11" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="binomial-linear-regression.html#cb26-12" tabindex="-1"></a>binary_dataset <span class="ot">&lt;-</span> datos_flight[, columns_to_keep]</span></code></pre></div>
+</details>
+</div>
+<div id="regression-equation-1" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Regression Equation<a href="binomial-linear-regression.html#regression-equation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The goal of this study is to investigate the probability that the response variable 𝑌 is 1 in regards to each carrier. Thus, this study is fundamentally a regression analysis based on probabilities, specifically focusing on the odds ratio. The odds ratio represents the likelihood of an event occurring relative to it not occurring.</p>
+<p><span class="math display">\[
+\text{Odds} = \frac{\text{Probability of event}}{\text{Probability of no event}}
+\]</span></p>
+<p>The challenge of using odds as response variables in a linear model lies in their range from 0 to infinity, making them unable to naturally form a straight line relationship with predictors that range across all real numbers. To address this, a new strategy is proposed: predicting log-odds instead of odds. This transformation maps probabilities from the interval [0, 1] to the entire real line (−∞ to +∞). This allows the output to vary freely from (−∞ to +∞), which is essential for a linear relationship. Accordingly, the logistic regression model is expressed as follows:</p>
+<p><span class="math display">\[
+Logit(P(Y = 1|X))=ln(\frac{P}{1−PP}​)= β_0​+β_1​ \quad \cdot \quad (\text{carrier name})
+\]</span></p>
+<p>Here, <span class="math inline">\(log(\frac{P}{1-P})\)</span> is the mathematical formula of the log-Odds which is used to calculate the probability of the event occurring. <span class="math inline">\(\beta_0\)</span> is the intercept and <span class="math inline">\(\beta_1\)</span> is the coefficients for the predictor variable x, <code>carrier</code> .</p>
+<p>The elements of this equation, including the natural logarithmic probability and the coefficients (β0, β1), are automatically computed by implementing the GLM function with the family parameter set to binomial <code>glm(..., family = "binomial")</code>. Below the model is fitted to assess its accuracy.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="binomial-linear-regression.html#cb27-1" tabindex="-1"></a>binomial_model_eval <span class="ot">&lt;-</span> <span class="fu">glm</span>(arr_delay_binary <span class="sc">~</span> carrier_grouped, </span>
+<span id="cb27-2"><a href="binomial-linear-regression.html#cb27-2" tabindex="-1"></a>                           <span class="at">data =</span> binary_dataset, </span>
+<span id="cb27-3"><a href="binomial-linear-regression.html#cb27-3" tabindex="-1"></a>                           <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Summary </b></p>
+</summary>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="binomial-linear-regression.html#cb28-1" tabindex="-1"></a><span class="co"># Summary of the binomial model</span></span>
+<span id="cb28-2"><a href="binomial-linear-regression.html#cb28-2" tabindex="-1"></a><span class="fu">summary</span>(binomial_model_eval)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = arr_delay_binary ~ carrier_grouped, family = &quot;binomial&quot;, 
+##     data = binary_dataset)
+## 
+## Coefficients:
+##                      Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)          -0.27712    0.12154  -2.280   0.0226 *
+## carrier_groupedAA    -0.24218    0.15250  -1.588   0.1123  
+## carrier_groupedB6    -0.02841    0.14063  -0.202   0.8399  
+## carrier_groupedDL    -0.36821    0.14389  -2.559   0.0105 *
+## carrier_groupedEV     0.26950    0.14091   1.913   0.0558 .
+## carrier_groupedFL     0.66659    0.30765   2.167   0.0303 *
+## carrier_groupedMQ     0.30206    0.15732   1.920   0.0549 .
+## carrier_groupedOther -0.12834    0.42596  -0.301   0.7632  
+## carrier_groupedUA    -0.14615    0.14045  -1.041   0.2981  
+## carrier_groupedUS    -0.13671    0.16950  -0.807   0.4199  
+## carrier_groupedVX    -0.09325    0.27031  -0.345   0.7301  
+## carrier_groupedWN     0.11769    0.19402   0.607   0.5441  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 6809.3  on 4999  degrees of freedom
+## Residual deviance: 6744.6  on 4988  degrees of freedom
+## AIC: 6768.6
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+</details>
+<p>For several carriers (AA, B6, UA, US, VX, WN, Other), the coefficients obtained do not exhibit statistical significance. The residual deviance, which stands at 6756.4 in contrast to the null deviance of 6816.7, suggests that while the model accounts for a portion of the variability in flight delays, it does not capture all of it. Moreover, the “Other” category, representing carriers with limited samples, does not demonstrate statistical significance (p-value: 0.4092).</p>
+<p>I suspect that the variation in entry counts across carriers impacts the coefficient significance in this model. When one category has significantly more observations, it may dominate the model’s estimation, leading to biased estimates and inflated significance levels. Of more concern is the implication that the model has poor performance. However, without a comprehensive model evaluation, the true performance remains uncertain. Thus, we’ll assess the model’s effectiveness using evaluation metrics derived from a confusion matrix after the training and prediction process.</p>
+</div>
+</div>
+<div id="training-predicting-process-1" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Training &amp; Predicting Process<a href="binomial-linear-regression.html#training-predicting-process-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before evaluating the model’s performance, it’s crucial to split the dataset into training and testing sets. Once the model is trained on the training set, we can assess its performance on the testing set to evaluate its ability to capture data patterns and make reliable predictions. To see how the model was fitted click on Model.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="binomial-linear-regression.html#cb30-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb30-2"><a href="binomial-linear-regression.html#cb30-2" tabindex="-1"></a>train_index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(binary_dataset), <span class="fl">0.8</span> <span class="sc">*</span> <span class="fu">nrow</span>(binary_dataset))</span>
+<span id="cb30-3"><a href="binomial-linear-regression.html#cb30-3" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> binary_dataset[train_index, ]</span>
+<span id="cb30-4"><a href="binomial-linear-regression.html#cb30-4" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> binary_dataset[<span class="sc">-</span>train_index, ]</span></code></pre></div>
+<details>
+<p><summary><b style="font-size:90%; border: 1px solid gray; border-radius: 5px; padding: 5px; ">Model </b></p>
+</summary>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="binomial-linear-regression.html#cb31-1" tabindex="-1"></a><span class="co"># Train the logistic regression model on the training set</span></span>
+<span id="cb31-2"><a href="binomial-linear-regression.html#cb31-2" tabindex="-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(arr_delay_binary <span class="sc">~</span> carrier_grouped, </span>
+<span id="cb31-3"><a href="binomial-linear-regression.html#cb31-3" tabindex="-1"></a>                   <span class="at">data =</span> train_data, </span>
+<span id="cb31-4"><a href="binomial-linear-regression.html#cb31-4" tabindex="-1"></a>                   <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
+</details>
+<p>After fitting the logistic regression model, the predicted probabilities need to be converted into binary outcomes to compare them with the actual binary outcomes of <code>arr_delay_binary</code>.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="binomial-linear-regression.html#cb32-1" tabindex="-1"></a><span class="co"># Predict on the testing set</span></span>
+<span id="cb32-2"><a href="binomial-linear-regression.html#cb32-2" tabindex="-1"></a>predicted_probs <span class="ot">&lt;-</span> <span class="fu">predict</span>(logit_model, <span class="at">newdata =</span> test_data, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb32-3"><a href="binomial-linear-regression.html#cb32-3" tabindex="-1"></a>predicted_classes <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(predicted_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
+<div id="model-evaluation" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Model Evaluation<a href="binomial-linear-regression.html#model-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>This evaluation is grounded in the implementation of the confusion matrix, which offers a comprehensive breakdown of the model’s predictions in comparison to the actual outcomes. This matrix serves as the foundation for calculating various evaluation metrics, including accuracy, precision, recall, specificity, and the F1 score. By utilizing these metrics, we anticipate gaining insights into both the strengths and weaknesses of the model.</p>
+<pre><code>##    predicted_classes
+##       0   1
+##   0 526  47
+##   1 381  46</code></pre>
+<p>The confusion matrix breaks down predictions versus actual outcomes in binary classification scenarios, detailing counts for true positives (TP), true negatives (TN), false positives (FP), and false negatives (FN). TP represents correctly predicted delays (1), TN denotes correctly predicted non-delays (0). In our case, we have 526 TNs and 46 TPs. FP occurs when predicting a delay but the outcome is not, resulting in 47 instances, while FN arises when predicting no delay but experiencing a delay, with 381 occurrences.</p>
+<p>These values (TN = 526, FP = 47, FN = 381, TP = 46) are now implemented to calculate the metrics.</p>
+<p>The first metric, Accuracy, measures the proportion of correctly predicted outcomes out of the total number of predictions, providing an overall measure of correctness.</p>
+<pre><code>## Accuracy: 0.572</code></pre>
+<p>In this case, an accuracy of 0.572 indicates that approximately 57.2% of the model’s predictions are correct. This suggests that the model is correct more often than not, but it still makes a significant number of errors.</p>
+<p>Precision is the proportion of true positives out of all instances predicted as delays, indicating the model’s ability to avoid false positives.</p>
+<pre><code>## Precision: 0.4946237</code></pre>
+<p>A precision of 0.495 means that roughly 49.5% of the flights predicted as delays are actually delayed. This indicates that the model has a moderate rate of false positives, predicting delays that don’t occur about half the time.</p>
+<p>Recall, also known as sensitivity, is the proportion of true positives out of all actual delays.</p>
+<pre><code>## Recall: 0.1077283</code></pre>
+<p>A recall of 0.108 indicates that approximately 10.8% of the actual delays are correctly identified by the model. This low recall suggests that the model misses a large number of actual delays, indicating poor sensitivity to the delayed flights.</p>
+<p>Specificity is the proportion of true negatives out of all actual non-delays, focusing on the model’s ability to avoid false positives for non-delays.</p>
+<pre><code>## Specificity: 0.9179756</code></pre>
+<p>With a specificity of 0.918, roughly 91.8% of the non-delay flights are correctly identified by the model. This high specificity indicates that the model is good at identifying flights that will not be delayed, minimizing false positives.</p>
+<p>The F1 Score is the harmonic mean of precision and recall, providing a balance between these two metrics, especially useful when the classes are imbalanced.</p>
+<pre><code>## F1 Score: 0.1769231</code></pre>
+<p>An F1 Score of 0.177 suggests a poor balance between precision and recall, with the model performing poorly in identifying actual delays (low recall) and having a moderate number of false positives (moderate precision). The low F1 score indicates overall suboptimal performance, especially in identifying delayed flights.</p>
+<p>The analysis of the confusion matrix and derived metrics reveals notable findings regarding the model’s efficacy. While demonstrating a commendable ability to predict non-delayed flights, with a specificity of 91.8%, its performance in identifying actual delays is markedly deficient, as indicated by a low recall rate of 0.108. Despite achieving an overall accuracy of 57.2%, the model’s disproportionate precision and recall resulted in an F1 Score of 0.177, which highlights the model’s suboptimal capability in detecting delayed flights., exacerbated by the inherent class imbalance within the dataset, skewed towards non-delays. The model’s sub-optimal performance might also stem from short availability of features. In this instance, the model solely relied on the “carrier_grouped” variable for predicting flight delays, potentially neglecting other pertinent predictors.</p>
+<p>The subsequent section will conduct a comprehensive evaluation of the model’s strengths and limitations to inform future refinement efforts.</p>
+</div>
+</div>
+<div id="strengths-and-limitations" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Strengths and Limitations<a href="binomial-linear-regression.html#strengths-and-limitations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="strengths-1" class="section level3 hasAnchor" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> Strengths<a href="binomial-linear-regression.html#strengths-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The GLM to binomial modeling technique presents several notable strengths, rendering it an appropriate choice for analyzing vast datasets such as flight data. Its simplicity and computational efficiency facilitate model implementation and interpretation. Moreover, its robustness to outliers, attributed to the flexibility of the log-odds, enhances its reliability compared to more sensitive models like Simple Linear Regression. Despite its limitations, evidenced by an accuracy of 57.2%, the model demonstrates reasonable performance despite the complexities found in the data.</p>
+</div>
+<div id="limitations-1" class="section level3 hasAnchor" number="4.4.2">
+<h3><span class="header-section-number">4.4.2</span> Limitations<a href="binomial-linear-regression.html#limitations-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The GLM to binomial, while straightforward, may struggle to capture complex patterns due to its simplistic nature compared to more advanced techniques like decision trees or neural networks. Its assumption of a linear relationship between predictors and outcomes may limit its ability to model nonlinear relationships. This model might also face challenges in generalizing to unseen data as it seems to be very sensitivity to imbalances in sample sizes impacting the model’s predictive power. To improve performance, exploring alternative algorithms and incorporating additional features might be needed to enhance its robustness. In summary, while GLM to binomial explains some variability in flight delays, its predictive power may be constrained by the model’s simplicity and the exclusion of potentially relevant predictors.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="poisson-linear-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="support-vector-machine.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/EliB29/AML/edit/main/03-linear-to-binomial.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/EliB29/AML/blob/main/03-linear-to-binomial.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
