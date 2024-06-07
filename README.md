@@ -4,7 +4,7 @@
 ## Team Members 
 *If you encounter any difficulties or have feedback of any kind, please communicate with us through our institutional emails.*
 - [Eliana Perea Barreto](mailto:youremail@example.com)
-- [Sheptim Vesil](mailto:team1@example.com)
+- [Shpetim Vesil](mailto:team1@example.com)
   
 ## Project Overview
 This project demonstrates the use of various machine learning models, each documented in a separate R Markdown (.Rmd) file. The models included are Simple Linear Regression, Generalized Linear Model to Poisson, Generalized Linear Model to Binomial, Support Vector Machines (SVM), Additive Model, and Neural Network (NN). Additionally, there is an introductory `.Rmd` file that provides an overview of the project and the models used.
