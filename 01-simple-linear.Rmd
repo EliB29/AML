@@ -4,7 +4,7 @@ library(nycflights13)
 
 # Simple Linear Model
 
-By Sheptim Veseli
+By Shpetim Veseli
 
 ## Introduction
 
