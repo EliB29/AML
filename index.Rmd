@@ -1,6 +1,6 @@
 ---
 title: "Applied Machine Learning"
-author: "Sheptim Veseli & Eliana Perea Barreto"
+author: "Shpetim Veseli & Eliana Perea Barreto"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
